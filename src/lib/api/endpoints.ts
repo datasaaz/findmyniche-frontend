@@ -1,4 +1,3 @@
-// src/lib/api/endpoints.ts
 import { apiFetch } from "./api-client";
 
 export type Location = {
@@ -7,6 +6,14 @@ export type Location = {
   country_code: string;
   lat: number;
   lon: number;
+};
+
+export type ProductDetails = {
+  features: string[];
+  target_audience: string;
+  pricing: string;
+  platforms: string[]; // fixed options in UI, backend stores as array
+  benefits: string[];
 };
 
 export type MeResponse = {
@@ -56,18 +63,11 @@ export type ReportDetailResponse = {
     run_no: number;
     query: string;
     location_json: Location;
+    product_details_json?: ProductDetails | any; // NEW (optional for older rows)
     ai_response_json: any;
     external_report_id?: string | null;
     created_at: string;
   }>;
-};
-
-/**
- * Location suggest endpoint response
- */
-export type LocationSuggestResponse = {
-  ok: boolean;
-  items: Location[];
 };
 
 export async function postBootstrap(token: string) {
@@ -88,7 +88,13 @@ export async function createBillingPortal(token: string) {
 
 export async function serviceSearch(
   token: string,
-  payload: { query: string; location: Location; save: boolean; report_name?: string }
+  payload: {
+    query: string;
+    product_details: ProductDetails; // NEW
+    location: Location;
+    save: boolean;
+    report_name?: string;
+  }
 ) {
   return apiFetch<ServiceSearchResponse>(`/service/search`, {
     method: "POST",
@@ -112,30 +118,9 @@ export async function deleteReport(token: string, reportId: number) {
   });
 }
 
-/**
- * Intelligent location suggestion (backend: GET /locations/suggest?q=...)
- * Uses apiFetch so it automatically uses NEXT_PUBLIC_API_BASE_URL + Bearer token.
- */
 export async function suggestLocations(token: string, q: string) {
-  // q is user typed text; enforce small length to avoid wasting calls
-  const trimmed = q.trim();
-  if (trimmed.length < 2) {
-    return { ok: true as const, status: 200, message: "ok", data: { items: [] as Location[] } };
-  }
-
-  // apiFetch should accept querystrings; we keep URL-encoding here.
-  const path = `/locations/suggest?q=${encodeURIComponent(trimmed)}`;
-
-  // Backend returns: { items: Location[] }
-  // We normalize into { ok, items } for convenience.
-  const r = await apiFetch<{ items: Location[] }>(path, { method: "GET", token });
-
-  if (!r.ok) return r as any;
-
-  return {
-    ...r,
-    data: {
-      items: Array.isArray((r as any).data?.items) ? (r as any).data.items : [],
-    },
-  };
+  return apiFetch<{ ok: boolean; items: Location[] }>(`/locations/suggest?q=${encodeURIComponent(q)}`, {
+    method: "GET",
+    token,
+  });
 }

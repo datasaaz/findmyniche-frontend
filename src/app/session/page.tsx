@@ -13,9 +13,88 @@ import {
   suggestLocations,
   type Location,
   type MeResponse,
+  type ProductDetails,
   type ReportSummary,
 } from "../../lib/api/endpoints";
 import { LocationSelector } from "../../components/location/LocationSelector";
+
+function normalizeTag(s: string) {
+  return s.trim().replace(/\s+/g, " ");
+}
+
+function TagInput({
+  label,
+  help,
+  value,
+  onChange,
+  placeholder,
+  disabled,
+}: {
+  label: string;
+  help?: string;
+  value: string[];
+  onChange: (next: string[]) => void;
+  placeholder?: string;
+  disabled?: boolean;
+}) {
+  const [draft, setDraft] = useState("");
+
+  function addTag(raw: string) {
+    const t = normalizeTag(raw);
+    if (!t) return;
+    if (value.some((x) => x.toLowerCase() === t.toLowerCase())) return;
+    onChange([...value, t]);
+    setDraft("");
+  }
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTag(draft);
+    }
+    if (e.key === "Backspace" && !draft && value.length) {
+      onChange(value.slice(0, -1));
+    }
+  }
+
+  return (
+    <div className="mt-4">
+      <div className="text-sm font-semibold text-gray-900">{label}</div>
+      {help ? <p className="mt-1 text-sm text-gray-600">{help}</p> : null}
+
+      <div className="mt-2 flex flex-wrap gap-2 rounded-xl border p-2">
+        {value.map((t) => (
+          <span key={t} className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-xs">
+            <span className="text-gray-900">{t}</span>
+            <button
+              type="button"
+              className="text-gray-500 hover:text-gray-900 disabled:opacity-60"
+              onClick={() => onChange(value.filter((x) => x !== t))}
+              disabled={!!disabled}
+              aria-label={`Remove ${t}`}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+
+        <input
+          className="min-w-[180px] flex-1 border-0 bg-transparent px-2 py-1 text-sm outline-none"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={onKeyDown}
+          onBlur={() => addTag(draft)}
+          placeholder={placeholder ?? "Type and press Enter"}
+          disabled={!!disabled}
+        />
+      </div>
+
+      <div className="mt-1 text-xs text-gray-500">Press Enter or comma to add. Backspace removes last tag.</div>
+    </div>
+  );
+}
+
+const PLATFORM_OPTIONS = ["physical", "online"] as const;
 
 export default function SessionPage() {
   const router = useRouter();
@@ -25,11 +104,18 @@ export default function SessionPage() {
   const [loadingMe, setLoadingMe] = useState(false);
   const [meError, setMeError] = useState<string | null>(null);
 
-  // New “business description”
+  // Existing “business description”
   const [idea, setIdea] = useState("");
 
   // Intelligent selector value (nullable until chosen)
   const [location, setLocation] = useState<Location | null>(null);
+
+  // NEW: product_details
+  const [features, setFeatures] = useState<string[]>([]);
+  const [benefits, setBenefits] = useState<string[]>([]);
+  const [platforms, setPlatforms] = useState<string[]>([]);
+  const [targetAudience, setTargetAudience] = useState("");
+  const [pricing, setPricing] = useState("");
 
   // Modal state
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -120,6 +206,29 @@ export default function SessionPage() {
 
   const ideaCharsLeft = 600 - idea.length;
 
+  function buildProductDetails(): ProductDetails {
+    return {
+      features,
+      benefits,
+      platforms,
+      target_audience: targetAudience.trim(),
+      pricing: pricing.trim(),
+    };
+  }
+
+  function validateProductDetails(pd: ProductDetails): string | null {
+    if (!pd.features.length) return "Please add at least 1 feature.";
+    if (!pd.benefits.length) return "Please add at least 1 benefit.";
+    if (!pd.platforms.length) return "Please choose at least 1 platform.";
+    if (!pd.target_audience) return "Please enter the target audience.";
+    if (!pd.pricing) return "Please enter the pricing.";
+    return null;
+  }
+
+  function togglePlatform(p: string) {
+    setPlatforms((prev) => (prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]));
+  }
+
   function openSaveModal() {
     setUiError(null);
 
@@ -133,6 +242,13 @@ export default function SessionPage() {
     }
     if (!location) {
       setUiError("Please select a location from the suggestions.");
+      return;
+    }
+
+    const pd = buildProductDetails();
+    const pdErr = validateProductDetails(pd);
+    if (pdErr) {
+      setUiError(pdErr);
       return;
     }
 
@@ -157,9 +273,17 @@ export default function SessionPage() {
         return;
       }
 
+      const pd = buildProductDetails();
+      const pdErr = validateProductDetails(pd);
+      if (pdErr) {
+        setUiError(pdErr);
+        return;
+      }
+
       const payload = {
         query: idea.trim(),
-        location, // <- required object
+        product_details: pd,
+        location,
         save,
         ...(save ? { report_name: name } : {}),
       };
@@ -396,7 +520,80 @@ export default function SessionPage() {
               />
             </div>
 
-            <div className="mt-4 flex flex-col gap-2 md:flex-row">
+            {/* NEW: Product details */}
+            <div className="mt-8 border-t pt-6">
+              <div className="text-sm font-semibold text-gray-900">Product details</div>
+              <p className="mt-1 text-sm text-gray-600">
+                Add specifics so the analysis can be more grounded. (Required)
+              </p>
+
+              <TagInput
+                label="Features"
+                help="Examples: chicken and beef, vegan option, fast service"
+                value={features}
+                onChange={setFeatures}
+                placeholder="Type a feature and press Enter"
+                disabled={submitting || billingLoading || portalLoading}
+              />
+
+              <TagInput
+                label="Benefits"
+                help="Examples: halal, free mango loco on purchase of more than 10 euro"
+                value={benefits}
+                onChange={setBenefits}
+                placeholder="Type a benefit and press Enter"
+                disabled={submitting || billingLoading || portalLoading}
+              />
+
+              <div className="mt-4">
+                <div className="text-sm font-semibold text-gray-900">Platforms</div>
+                <p className="mt-1 text-sm text-gray-600">Choose one or more. (Fixed options)</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {PLATFORM_OPTIONS.map((p) => {
+                    const selected = platforms.includes(p);
+                    return (
+                      <button
+                        key={p}
+                        type="button"
+                        className={
+                          selected
+                            ? "rounded-full bg-black px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
+                            : "rounded-full border bg-white px-3 py-1.5 text-xs font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-60"
+                        }
+                        onClick={() => togglePlatform(p)}
+                        disabled={submitting || billingLoading || portalLoading}
+                      >
+                        {p}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-semibold text-gray-900">Target audience</label>
+                <input
+                  className="mt-2 w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 disabled:opacity-60"
+                  value={targetAudience}
+                  onChange={(e) => setTargetAudience(e.target.value)}
+                  placeholder="Example: all genders and all ages"
+                  disabled={submitting || billingLoading || portalLoading}
+                />
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-semibold text-gray-900">Pricing</label>
+                <input
+                  className="mt-2 w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10 disabled:opacity-60"
+                  value={pricing}
+                  onChange={(e) => setPricing(e.target.value)}
+                  placeholder="Example: chicken 10 euro and beef 12 euro"
+                  disabled={submitting || billingLoading || portalLoading}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-2 md:flex-row">
               <button
                 className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
                 onClick={openSaveModal}
@@ -471,7 +668,7 @@ export default function SessionPage() {
           <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-lg">
             <div className="text-sm font-semibold text-gray-900">Save this report?</div>
             <p className="mt-1 text-sm text-gray-600">
-              If you save, we will store the query, location and AI response. Report name must be unique and max 50 chars.
+              If you save, we will store the query, location, product details and AI response. Report name must be unique and max 50 chars.
             </p>
 
             <label className="mt-4 block text-sm font-medium text-gray-900" htmlFor="reportName">
