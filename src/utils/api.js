@@ -15,8 +15,8 @@ export const getLanding = async () => {
 };
 
 
-export const getLocation = async () => {
-  const response = await api.get("place-lookup");
+export const getLocation = async (query) => {
+  const response = await api.get("place-lookup", { params: { query : query } });
   return response.data;
 };
 

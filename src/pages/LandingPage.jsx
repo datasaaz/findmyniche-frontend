@@ -16,8 +16,12 @@ export function LandingPage() {
     queryFn: getLanding,
   });
 
-  console.log("landingApiData", landingApiData);
-
+  const insightPreview = landingApiData?.insightPreview ?? {
+    header: {},
+    metrics: [],
+    competition: { bars: [], legend: [] }
+  };
+  const pricingPlans = landingApiData?.pricingPlans ?? [];
 
 
   useEffect(() => {
@@ -39,99 +43,7 @@ export function LandingPage() {
   const onSignIn = () => navigate("/login");
   const onContact = () => navigate("/contact");
 
-  const landingData = 
-  {
-    insightPreview: {
-      header: {
-        location: "Cambridge, UK",
-        category: "Coffee Shops",
-        badgeText: "Good Opportunity"
-      },
-      metrics: [
-        {
-          id: "competitors",
-          value: "18",
-          label: "Competitors nearby",
-          sublabel: "Within 1km radius",
-          badgeText: "Moderate"
-        },
-        {
-          id: "market-gaps",
-          value: "5",
-          label: "Market gaps found",
-          sublabel: "Underserved niches",
-          badgeText: "Strong"
-        },
-        {
-          id: "customer-demand",
-          value: "High",
-          label: "Customer demand",
-          sublabel: "1,247 monthly searches"
-        },
-        {
-          id: "avg-rating",
-          value: "3.8★",
-          label: "Avg competitor rating",
-          sublabel: "Room for improvement"
-        }
-      ],
-      competition: {
-        title: "Competition by area",
-        zonesAnalyzed: 6,
-        bars: [
-          { label: "N", height: 35 },
-          { label: "NE", height: 50 },
-          { label: "E", height: 70 },
-          { label: "SE", height: 95 },
-          { label: "S", height: 65 },
-          { label: "W", height: 40 }
-        ],
-        legend: [
-          { label: "Low (0-5)" },
-          { label: "Medium (6-12)" },
-          { label: "High (13+)" }
-        ],
-        insight: "North and West zones show lower saturation — consider these areas for new location"
-      }
-    },
-    pricingPlans: [
-      {
-        name: "Free",
-        description: "Perfect for testing the waters",
-        price: "$0",
-        priceId: "price_1QVC...",
-        priceSuffix: null,
-        priceNote: "Forever free",
-        ctaLabel: "Start free",
-        isPopular: false,
-        features: [
-          { text: "1 free report on signup", included: true },
-          { text: "Basic market stats", included: true },
-          { text: "Limited insights", included: true },
-          { text: "Masked details", included: false }
-        ]
-      },
-      {
-        name: "Pro",
-        description: "For serious market research",
-        price: "$49",
-        priceId: "price_1QVC...",
-        priceSuffix: "/month",
-        priceNote: "Billed monthly",
-        ctaLabel: "Unlock full insights",
-        isPopular: true,
-        features: [
-          { text: "Full reports", included: true, emphasis: true },
-          { text: "Unlocked market gaps", included: true, emphasis: true },
-          { text: "Advanced signals", included: true, emphasis: true },
-          { text: "Saved reports", included: true, emphasis: true },
-          { text: "Priority analysis", included: true, emphasis: true }
-        ]
-      }
-    ]
-  };
 
-  const { insightPreview, pricingPlans } = landingData;
 
   const competitionBarStyles = [
     { colorClass: "bg-green-400", hoverClass: "hover:bg-green-500" },
@@ -230,12 +142,12 @@ export function LandingPage() {
                   <div>
                     <div className="flex items-center gap-2 text-gray-600 text-sm mb-1">
                       <MapPin className="w-4 h-4" />
-                      <span>{insightPreview.header.location}</span>
+                      <span>{insightPreview.header?.location}</span>
                     </div>
-                    <div className="text-lg font-semibold text-gray-900">{insightPreview.header.category}</div>
+                    <div className="text-lg font-semibold text-gray-900">{insightPreview.header?.category}</div>
                   </div>
                   <Badge className="bg-green-100 text-green-700 border-green-200">
-                    {insightPreview.header.badgeText}
+                    {insightPreview.header?.badgeText}
                   </Badge>
                 </div>
 
@@ -245,47 +157,79 @@ export function LandingPage() {
                     <div className="flex items-center justify-between mb-2">
                       <Users className="w-5 h-5 text-blue-600" />
                       <Badge className="bg-blue-200 text-blue-900 text-xs">
-                        Moderate
+                        {insightPreview.metrics?.[0]?.badgeText}
                       </Badge>
                     </div>
-                    <div className="text-2xl font-bold text-blue-900 mb-1">{insightPreview.metrics[0].value}</div>
-                    <div className="text-sm text-blue-700 font-medium mb-1">{insightPreview.metrics[0].label}</div>
-                    <div className="text-xs text-blue-600">
-                      {insightPreview.metrics[0].sublabel}
-                    </div>
+                    {isLoading ? (
+                      <div className="flex items-center justify-center h-20">
+                        <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="text-2xl font-bold text-blue-900 mb-1">{insightPreview.metrics?.[0]?.value}</div>
+                        <div className="text-sm text-blue-700 font-medium mb-1">{insightPreview.metrics?.[0]?.label}</div>
+                        <div className="text-xs text-blue-600">
+                          {insightPreview.metrics?.[0]?.sublabel}
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="p-4 bg-gradient-to-br from-green-50 to-green-100/50 rounded-lg border border-green-200">
                     <div className="flex items-center justify-between mb-2">
                       <Target className="w-5 h-5 text-green-600" />
                       <Badge className="bg-green-200 text-green-900 text-xs">
-                        {insightPreview.metrics[1].badgeText}
+                        {insightPreview.metrics?.[1]?.badgeText}
                       </Badge>
                     </div>
-                    <div className="text-2xl font-bold text-green-900 mb-1">{insightPreview.metrics[1].value}</div>
-                    <div className="text-sm text-green-700 font-medium mb-1">{insightPreview.metrics[1].label}</div>
-                    <div className="text-xs text-green-600">
-                      {insightPreview.metrics[1].sublabel}
-                    </div>
+                    {isLoading ? (
+                      <div className="flex items-center justify-center h-20">
+                        <div className="w-5 h-5 border-2 border-green-400 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="text-2xl font-bold text-green-900 mb-1">{insightPreview.metrics?.[1]?.value}</div>
+                        <div className="text-sm text-green-700 font-medium mb-1">{insightPreview.metrics?.[1]?.label}</div>
+                        <div className="text-xs text-green-600">
+                          {insightPreview.metrics?.[1]?.sublabel}
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-lg border border-purple-200">
                     <div className="flex items-center gap-2 mb-2">
                       <TrendingUp className="w-5 h-5 text-purple-600" />
-                      <span className="text-xs text-purple-700 font-medium">{insightPreview.metrics[2].label}</span>
+                      <span className="text-xs text-purple-700 font-medium">{insightPreview.metrics?.[2]?.label}</span>
                     </div>
-                    <div className="text-2xl font-bold text-purple-900 mb-1">{insightPreview.metrics[2].value}</div>
-                    <div className="text-xs text-purple-600">
-                      {insightPreview.metrics[2].sublabel}
-                    </div>
+                    {isLoading ? (
+                      <div className="flex items-center justify-center h-16">
+                        <div className="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="text-2xl font-bold text-purple-900 mb-1">{insightPreview.metrics?.[2]?.value}</div>
+                        <div className="text-xs text-purple-600">
+                          {insightPreview.metrics?.[2]?.sublabel}
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-lg border border-amber-200">
                     <div className="flex items-center gap-2 mb-2">
                       <Star className="w-5 h-5 text-amber-600" />
-                      <span className="text-xs text-amber-700 font-medium">{insightPreview.metrics[3].label}</span>
+                      <span className="text-xs text-amber-700 font-medium">{insightPreview.metrics?.[3]?.label}</span>
                     </div>
-                    <div className="text-2xl font-bold text-amber-900 mb-1">{insightPreview.metrics[3].value}</div>
-                    <div className="text-xs text-amber-600">
-                      {insightPreview.metrics[3].sublabel}
-                    </div>
+                    {isLoading ? (
+                      <div className="flex items-center justify-center h-16">
+                        <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="text-2xl font-bold text-amber-900 mb-1">{insightPreview.metrics?.[3]?.value}</div>
+                        <div className="text-xs text-amber-600">
+                          {insightPreview.metrics?.[3]?.sublabel}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -294,17 +238,17 @@ export function LandingPage() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <BarChart3 className="w-4 h-4 text-gray-700" />
-                      <div className="text-sm font-semibold text-gray-900">{insightPreview.competition.title}</div>
+                      <div className="text-sm font-semibold text-gray-900">{insightPreview.competition?.title}</div>
                     </div>
                     <Badge className="bg-gray-200 text-gray-700 text-xs">
-                      {insightPreview.competition.zonesAnalyzed} zones analyzed
+                      {insightPreview.competition?.zonesAnalyzed} zones analyzed
                     </Badge>
                   </div>
                   
                   {/* Chart */}
                   <div className="mb-3">
                     <div className="flex items-end justify-between gap-2 h-20 mb-2">
-                      {insightPreview.competition.bars.map((bar, index) => (
+                      {insightPreview.competition?.bars?.map((bar, index) => (
                         <div key={bar.label} className="flex-1 flex flex-col items-center justify-end gap-1 h-full">
                           <div
                             className={`w-full ${competitionBarStyles[index]?.colorClass ?? "bg-gray-300"} rounded-t transition-all ${competitionBarStyles[index]?.hoverClass ?? ""}`}
@@ -316,7 +260,7 @@ export function LandingPage() {
                     
                     {/* Zone labels */}
                     <div className="flex items-center justify-between text-xs text-gray-500">
-                      {insightPreview.competition.bars.map((bar) => (
+                      {insightPreview.competition?.bars?.map((bar) => (
                         <span key={bar.label} className="flex-1 text-center">{bar.label}</span>
                       ))}
                     </div>
@@ -326,7 +270,7 @@ export function LandingPage() {
                   <div className="flex items-start gap-3 pt-3 border-t border-gray-200">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 text-xs mb-2">
-                        {insightPreview.competition.legend.map((item, index) => (
+                        {insightPreview.competition?.legend?.map((item, index) => (
                           <div key={item.label} className="flex items-center gap-1">
                             <div className={`w-3 h-3 ${competitionLegendStyles[index]?.colorClass ?? "bg-gray-300"} rounded`}></div>
                             <span className="text-gray-600">{item.label}</span>
@@ -334,7 +278,7 @@ export function LandingPage() {
                         ))}
                       </div>
                       <div className="text-xs text-gray-600 leading-relaxed">
-                        <span className="font-semibold text-gray-900">Insight:</span> {insightPreview.competition.insight}
+                        <span className="font-semibold text-gray-900">Insight:</span> {insightPreview.competition?.insight}
                       </div>
                     </div>
                   </div>

@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 import { Target, ArrowLeft, MapPin, Search, Check, TrendingUp, Users, Star, AlertTriangle, ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getLocation } from "../utils/api";
 
 export function LocationCategoryInput() {
   const navigate = useNavigate();
   const [locationInput, setLocationInput] = useState("");
+  const [debouncedLocation, setDebouncedLocation] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   
@@ -17,13 +20,30 @@ export function LocationCategoryInput() {
   
   const [selectedRefinements, setSelectedRefinements] = useState([]);
 
-  // Mock location suggestions
-  const locationSuggestions = [
-    { name: "Cambridge", region: "Cambridgeshire, UK", country: "United Kingdom" },
-    { name: "Cambridge", region: "Massachusetts", country: "United States" },
-    { name: "Camden", region: "London", country: "United Kingdom" },
-    { name: "Canterbury", region: "Kent", country: "United Kingdom" },
-  ];
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedLocation(locationInput.trim());
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [locationInput]);
+
+  const { data: locationData, isLoading: isLocationLoading } = useQuery({
+    queryKey: ["location-lookup", debouncedLocation],
+    queryFn: () => getLocation(debouncedLocation),
+    enabled: debouncedLocation.length > 0,
+  });
+
+  const locationSuggestions = Array.isArray(locationData)
+    ? locationData
+    : Array.isArray(locationData?.locations)
+      ? locationData.locations
+      : Array.isArray(locationData?.data)
+        ? locationData.data
+        : Array.isArray(locationData?.results)
+          ? locationData.results
+          : Array.isArray(locationData?.predictions)
+            ? locationData.predictions
+            : [];
 
   // Category suggestions
   const categoryOptions = [
@@ -106,11 +126,15 @@ export function LocationCategoryInput() {
       );
 
   const filteredLocations = locationInput.trim() === ""
-    ? locationSuggestions
-    : locationSuggestions.filter(loc => 
-        loc.name.toLowerCase().includes(locationInput.toLowerCase()) ||
-        loc.region.toLowerCase().includes(locationInput.toLowerCase())
-      );
+    ? []
+    : locationSuggestions.filter((location) => {
+        const name = location?.name ?? location?.description ?? "";
+        const region = location?.region ?? location?.secondary_text ?? "";
+        return (
+          name.toLowerCase().includes(locationInput.toLowerCase()) ||
+          region.toLowerCase().includes(locationInput.toLowerCase())
+        );
+      });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -182,7 +206,13 @@ export function LocationCategoryInput() {
                 {showLocationDropdown && locationInput && !selectedLocation && (
                   <Card className="absolute top-full mt-2 w-full border border-gray-200 shadow-lg z-10 bg-white">
                     <div className="py-2">
-                      {filteredLocations.map((location, index) => (
+                      {isLocationLoading && (
+                        <div className="px-4 py-3 text-sm text-gray-500">Loading locations...</div>
+                      )}
+                      {!isLocationLoading && filteredLocations.length === 0 && (
+                        <div className="px-4 py-3 text-sm text-gray-500">No locations found.</div>
+                      )}
+                      {!isLocationLoading && filteredLocations.map((location, index) => (
                         <button
                           key={index}
                           onClick={() => handleLocationSelect(location)}
@@ -192,9 +222,9 @@ export function LocationCategoryInput() {
                             <MapPin className="w-4 h-4 text-blue-600" />
                           </div>
                           <div>
-                            <div className="font-medium text-gray-900">{location.name}</div>
+                            <div className="font-medium text-gray-900">{location.name ?? location.description}</div>
                             <div className="text-sm text-gray-500">
-                              {location.region}, {location.country}
+                              {location.region ?? location.secondary_text}{location.country ? `, ${location.country}` : ""}
                             </div>
                           </div>
                         </button>
