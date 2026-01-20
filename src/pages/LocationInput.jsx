@@ -6,7 +6,7 @@ import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 import { Target, ArrowLeft, MapPin, Search, Check, TrendingUp, Users, Star, AlertTriangle, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { getLocation } from "../utils/api";
+import { getLocation, getRelevantCategories } from "../utils/api";
 
 export function LocationCategoryInput() {
   const navigate = useNavigate();
@@ -14,24 +14,30 @@ export function LocationCategoryInput() {
   const [debouncedLocation, setDebouncedLocation] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
-  
   const [categoryInput, setCategoryInput] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  
   const [selectedRefinements, setSelectedRefinements] = useState([]);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedLocation(locationInput.trim());
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [locationInput]);
+ 
 
   const { data: locationData, isLoading: isLocationLoading } = useQuery({
     queryKey: ["location-lookup", debouncedLocation],
     queryFn: () => getLocation(debouncedLocation),
     enabled: debouncedLocation.length > 0,
   });
+
+
+  const { data: relevantCategoriesData, isLoading: isRelevantCategoriesLoading } = useQuery({
+    queryKey: ["relevant-categories", categoryInput],
+    queryFn: () => getRelevantCategories(categoryInput),
+    enabled: !!selectedLocation,
+  });
+
+
+  const categoryOptions = relevantCategoriesData?.categories || [];
+  const refinements = relevantCategoriesData?.category_niche || [];
+
+
 
   const locationSuggestions = Array.isArray(locationData)
     ? locationData
@@ -45,43 +51,24 @@ export function LocationCategoryInput() {
             ? locationData.predictions
             : [];
 
-  // Category suggestions
-  const categoryOptions = [
-    "Restaurant",
-    "Café",
-    "Fast Food",
-    "Grocery Store",
-    "Fitness / Gym",
-    "Retail Store",
-    "Coffee Shop",
-    "Bakery",
-    "Bar / Pub",
-    "Beauty Salon",
-  ];
 
-  const getRefinementOptions = () => {
-    if (selectedCategory.toLowerCase().includes("restaurant") || 
-        selectedCategory.toLowerCase().includes("food") ||
-        selectedCategory.toLowerCase().includes("café") ||
-        selectedCategory.toLowerCase().includes("coffee")) {
-      return [
-        "Vegetarian / Vegan",
-        "Fast Casual",
-        "Premium / Fine Dining",
-        "Delivery-first",
-        "Late-night",
-        "Family-friendly",
-      ];
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedLocation(locationInput.trim());
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [locationInput]);
+
+
+  useEffect(() => {
+    if (categoryInput) {
+      setSelectedRefinements([]);
     }
-    return [
-      "Premium / Luxury",
-      "Budget-friendly",
-      "Family-oriented",
-      "Tech-forward",
-      "Eco-conscious",
-      "Local / Independent",
-    ];
-  };
+  }, [categoryInput]);
+
+
+
 
   const handleLocationSelect = (location) => {
     const fullLocation = `${location.name}, ${location.region}, ${location.country}`;
@@ -287,7 +274,7 @@ export function LocationCategoryInput() {
               </Card>
             </div>
 
-            <div className={`transition-all duration-500 ${selectedCategory ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+            <div className={`transition-all duration-500 ${selectedCategory && refinements.length > 0 ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
               <Card className="p-8 bg-white border border-gray-200 shadow-sm">
                 <div className="mb-6">
                   <Badge className="mb-3 bg-green-100 text-green-700 border-green-200">
@@ -302,13 +289,13 @@ export function LocationCategoryInput() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {getRefinementOptions().map((refinement) => {
+                  {refinements.map((refinement, index) => {
                     const isSelected = selectedRefinements.includes(refinement);
                     const isDisabled = !isSelected && selectedRefinements.length >= 2;
                     
                     return (
                       <button
-                        key={refinement}
+                        key={index}
                         onClick={() => toggleRefinement(refinement)}
                         disabled={!selectedCategory || isDisabled}
                         className={`p-4 rounded-lg text-sm font-medium transition-all border-2 ${
@@ -322,7 +309,7 @@ export function LocationCategoryInput() {
                         {isSelected && (
                           <Check className="w-4 h-4 text-green-600 mb-1" />
                         )}
-                        {refinement}
+                        {refinement.name}
                       </button>
                     );
                   })}

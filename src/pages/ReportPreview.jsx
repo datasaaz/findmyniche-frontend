@@ -38,6 +38,64 @@ export function ReportPreview({
   const resolvedRefinements = refinements || state?.refinements || [];
   const resolvedAuthenticated = state?.isAuthenticated ?? isAuthenticated;
 
+  const reportPreviewData = {
+    refinements: [
+      { id: "specialty", name: "Specialty coffee" },
+      { id: "late-night", name: "Late-night service" },
+    ],
+    chips: [
+      { id: "location", label: "Location", value: "Cambridge, UK" },
+      { id: "category", label: "Category", value: "Coffee Shop" },
+      {
+        id: "refinements",
+        label: "Refinements"
+      }
+    ],
+    metrics: [
+      {
+        id: "businesses",
+        value: "~80",
+        label: "businesses found",
+        sublabel: "Within 500m radius"
+      },
+      {
+        id: "reviews",
+        value: "10",
+        label: "reviewed locations",
+        sublabel: "Based on public reviews"
+      }
+    ],
+    marketSignalSummary: "Moderate competition with mixed customer sentiment",
+    benefits: [
+      {
+        id: "market-gaps",
+        title: "Detailed market gaps & opportunities",
+        description: "Identify underserved niches"
+      },
+      {
+        id: "risk-score",
+        title: "Risk warnings & confidence score",
+        description: "Avoid saturated markets"
+      },
+      {
+        id: "category-insights",
+        title: "Category-specific insights",
+        description: "Tailored to your business type"
+      },
+      {
+        id: "downloadable-report",
+        title: "Downloadable structured report",
+        description: "Export and share insights"
+      },
+      {
+        id: "saved-history",
+        title: "Saved report history",
+        description: "Access anytime, anywhere"
+      }
+    ]
+  };
+
+
   const handleUnlockClick = () => {
     setShowUpgradeModal(true);
   };
@@ -105,22 +163,37 @@ export function ReportPreview({
               </p>
 
               <div className="flex flex-wrap items-center gap-3 mt-6">
-                <div className="flex items-center gap-2 px-4 py-2 bg-blue-100 border border-blue-300 rounded-lg">
-                  <MapPin className="w-4 h-4 text-blue-700" />
-                  <span className="text-sm font-medium text-blue-900">{resolvedLocation}</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 border border-purple-300 rounded-lg">
-                  <Building2 className="w-4 h-4 text-purple-700" />
-                  <span className="text-sm font-medium text-purple-900">{resolvedCategory}</span>
-                </div>
-                {resolvedRefinements.length > 0 && (
-                  <div className="flex items-center gap-2 px-4 py-2 bg-green-100 border border-green-300 rounded-lg">
-                    <Check className="w-4 h-4 text-green-700" />
-                    <span className="text-sm font-medium text-green-900">
-                      {resolvedRefinements.join(", ")}
-                    </span>
-                  </div>
-                )}
+                {reportPreviewData.chips
+                  .filter((chip) => chip.id !== "refinements" || reportPreviewData.refinements.length > 0)
+                  .map((chip) => (
+                    <div
+                      key={chip.id}
+                      className={
+                        chip.id === "location"
+                          ? "flex items-center gap-2 px-4 py-2 bg-blue-100 border border-blue-300 rounded-lg"
+                          : chip.id === "category"
+                            ? "flex items-center gap-2 px-4 py-2 bg-purple-100 border border-purple-300 rounded-lg"
+                            : "flex items-center gap-2 px-4 py-2 bg-green-100 border border-green-300 rounded-lg"
+                      }
+                    >
+                      {chip.id === "location" && <MapPin className="w-4 h-4 text-blue-700" />}
+                      {chip.id === "category" && <Building2 className="w-4 h-4 text-purple-700" />}
+                      {chip.id === "refinements" && <Check className="w-4 h-4 text-green-700" />}
+                      <span
+                        className={
+                          chip.id === "location"
+                            ? "text-sm font-medium text-blue-900"
+                            : chip.id === "category"
+                              ? "text-sm font-medium text-purple-900"
+                              : "text-sm font-medium text-green-900"
+                        }
+                      >
+                        {chip.id === "refinements"
+                          ? reportPreviewData.refinements.map((item) => item.name).join(", ")
+                          : chip.value}
+                      </span>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -131,9 +204,9 @@ export function ReportPreview({
                     <Building2 className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">~80</div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">businesses found</div>
-                    <div className="text-xs text-gray-500">Within 500m radius</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{reportPreviewData.metrics[0].value}</div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">{reportPreviewData.metrics[0].label}</div>
+                    <div className="text-xs text-gray-500">{reportPreviewData.metrics[0].sublabel}</div>
                   </div>
                 </div>
               </Card>
@@ -144,9 +217,9 @@ export function ReportPreview({
                     <Star className="w-6 h-6 text-purple-600" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">10</div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">reviewed locations</div>
-                    <div className="text-xs text-gray-500">Based on public reviews</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{reportPreviewData.metrics[1].value}</div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">{reportPreviewData.metrics[1].label}</div>
+                    <div className="text-xs text-gray-500">{reportPreviewData.metrics[1].sublabel}</div>
                   </div>
                 </div>
               </Card>
@@ -161,7 +234,7 @@ export function ReportPreview({
                       Market Signal Summary
                     </div>
                     <p className="text-gray-700">
-                      Moderate competition with mixed customer sentiment
+                      {reportPreviewData.marketSignalSummary}
                     </p>
                   </div>
                 </div>
@@ -265,55 +338,17 @@ export function ReportPreview({
                 </h2>
 
                 <ul className="space-y-4 mb-8">
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900">
-                        Detailed market gaps & opportunities
+                  {reportPreviewData.benefits.map((benefit) => (
+                    <li key={benefit.id} className="flex items-start gap-3">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check className="w-4 h-4 text-white" />
                       </div>
-                      <div className="text-sm text-gray-600">Identify underserved niches</div>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900">
-                        Risk warnings & confidence score
+                      <div>
+                        <div className="font-medium text-gray-900">{benefit.title}</div>
+                        <div className="text-sm text-gray-600">{benefit.description}</div>
                       </div>
-                      <div className="text-sm text-gray-600">Avoid saturated markets</div>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900">Category-specific insights</div>
-                      <div className="text-sm text-gray-600">Tailored to your business type</div>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900">Downloadable structured report</div>
-                      <div className="text-sm text-gray-600">Export and share insights</div>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900">Saved report history</div>
-                      <div className="text-sm text-gray-600">Access anytime, anywhere</div>
-                    </div>
-                  </li>
+                    </li>
+                  ))}
                 </ul>
 
                 <div className="space-y-3">

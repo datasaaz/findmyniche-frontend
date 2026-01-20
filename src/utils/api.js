@@ -20,5 +20,10 @@ export const getLocation = async (query) => {
   return response.data;
 };
 
+export const getRelevantCategories = async (query) => {
+  const response = await api.get("relevant-categories", { params: { tag : query } });
+  return response.data;
+};
+
 export { API_BASE_URL };
 export default api;
