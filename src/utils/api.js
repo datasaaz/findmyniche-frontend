@@ -25,5 +25,11 @@ export const getRelevantCategories = async (query) => {
   return response.data;
 };
 
+
+export const CreatePreviewApi = async (payload) => {
+  const response = await api.post("report/preview", payload);
+  return response.data;
+};
+
 export { API_BASE_URL };
 export default api;

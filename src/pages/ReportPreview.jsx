@@ -18,6 +18,8 @@ import {
   ChevronRight,
   AlertCircle,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { CreatePreviewApi } from "../utils/api";
 
 export function ReportPreview({
   location,
@@ -37,6 +39,14 @@ export function ReportPreview({
   const resolvedCategory = category || state?.category || "Coffee Shop";
   const resolvedRefinements = refinements || state?.refinements || [];
   const resolvedAuthenticated = state?.isAuthenticated ?? isAuthenticated;
+
+
+  const {data : previewData} = useQuery({
+    queryKey: ["report-preview", resolvedLocation, resolvedCategory, resolvedRefinements],
+    queryFn: () => CreatePreviewApi(state),
+    enabled: !!resolvedLocation && !!resolvedCategory && !!resolvedRefinements.length
+  });
+
 
   const reportPreviewData = {
     refinements: [
@@ -163,8 +173,8 @@ export function ReportPreview({
               </p>
 
               <div className="flex flex-wrap items-center gap-3 mt-6">
-                {reportPreviewData.chips
-                  .filter((chip) => chip.id !== "refinements" || reportPreviewData.refinements.length > 0)
+                {reportPreviewData?.chips
+                  .filter((chip) => chip.id !== "refinements" || reportPreviewData?.refinements?.length > 0)
                   .map((chip) => (
                     <div
                       key={chip.id}
@@ -204,9 +214,9 @@ export function ReportPreview({
                     <Building2 className="w-6 h-6 text-blue-600" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">{reportPreviewData.metrics[0].value}</div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">{reportPreviewData.metrics[0].label}</div>
-                    <div className="text-xs text-gray-500">{reportPreviewData.metrics[0].sublabel}</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{reportPreviewData?.metrics[0].value}</div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">{reportPreviewData?.metrics[0].label}</div>
+                    <div className="text-xs text-gray-500">{reportPreviewData?.metrics[0].sublabel}</div>
                   </div>
                 </div>
               </Card>
@@ -217,9 +227,9 @@ export function ReportPreview({
                     <Star className="w-6 h-6 text-purple-600" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-3xl font-bold text-gray-900 mb-1">{reportPreviewData.metrics[1].value}</div>
-                    <div className="text-sm font-medium text-gray-700 mb-1">{reportPreviewData.metrics[1].label}</div>
-                    <div className="text-xs text-gray-500">{reportPreviewData.metrics[1].sublabel}</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{reportPreviewData?.metrics[1].value}</div>
+                    <div className="text-sm font-medium text-gray-700 mb-1">{reportPreviewData?.metrics[1].label}</div>
+                    <div className="text-xs text-gray-500">{reportPreviewData?.metrics[1].sublabel}</div>
                   </div>
                 </div>
               </Card>
@@ -234,7 +244,7 @@ export function ReportPreview({
                       Market Signal Summary
                     </div>
                     <p className="text-gray-700">
-                      {reportPreviewData.marketSignalSummary}
+                      {reportPreviewData?.marketSignalSummary}
                     </p>
                   </div>
                 </div>
