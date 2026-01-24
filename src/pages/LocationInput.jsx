@@ -126,25 +126,23 @@ export function LocationCategoryInput() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Minimal Top Navigation */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-semibold text-gray-900">findmyniche</span>
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 h-[72px] flex items-center">
+        <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-essence rounded-lg flex items-center justify-center">
+              <Target className="w-5 h-5 text-white" />
             </div>
+            <span className="text-xl font-semibold text-gray-900">findmyniche</span>
+          </div>
 
-            <div className="flex items-center gap-4">
-              <Badge variant="outline" className="text-gray-600 border-gray-300">
-                Guest user
-              </Badge>
-              <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back
-              </Button>
-            </div>
+          <div className="flex items-center gap-4">
+            <Badge variant="outline" className="text-gray-600 border-gray-300">
+              Guest user
+            </Badge>
+            <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
           </div>
         </div>
       </nav>
@@ -155,7 +153,7 @@ export function LocationCategoryInput() {
           <div className="lg:col-span-2 space-y-6">
             <Card className="p-8 bg-white border border-gray-200 shadow-sm">
               <div className="mb-6">
-                <Badge className="mb-3 bg-blue-100 text-blue-700 border-blue-200">
+                <Badge className="mb-3 bg-essence/10 text-essence border-essence/20">
                   Step 1
                 </Badge>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -205,8 +203,8 @@ export function LocationCategoryInput() {
                           onClick={() => handleLocationSelect(location)}
                           className="w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left flex items-center gap-3"
                         >
-                          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <MapPin className="w-4 h-4 text-blue-600" />
+                          <div className="w-8 h-8 bg-essence/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <MapPin className="w-4 h-4 text-essence" />
                           </div>
                           <div>
                             <div className="font-medium text-gray-900">{location.name ?? location.description}</div>
@@ -262,7 +260,7 @@ export function LocationCategoryInput() {
                         disabled={!selectedLocation}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                           selectedCategory === category
-                            ? 'bg-blue-600 text-white shadow-md'
+                            ? 'bg-essence text-white shadow-md'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
                         }`}
                       >
@@ -316,24 +314,13 @@ export function LocationCategoryInput() {
                 </div>
               </Card>
             </div>
-
-            <div className="pt-4">
-              <Button
-                onClick={handleCreateReport}
-                disabled={!isComplete}
-                className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-lg font-semibold shadow-lg"
-              >
-                Create market report
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
           </div>
 
           <div className="lg:col-span-1">
             <div className="sticky top-24">
-              <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 shadow-sm">
+              <Card className="p-6 bg-gradient-to-br from-essence/5 to-essence/10 border-2 border-essence/20 shadow-sm">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-essence rounded-lg flex items-center justify-center">
                     <TrendingUp className="w-4 h-4 text-white" />
                   </div>
                   What we'll analyze

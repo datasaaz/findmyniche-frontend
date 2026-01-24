@@ -8,7 +8,6 @@ import { getLanding } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
 
 export function LandingPage() {
-  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
 
   const { data: landingApiData , isLoading, error } = useQuery({
@@ -25,11 +24,7 @@ export function LandingPage() {
 
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Scroll behavior handled by Navbar for home page
   }, []);
 
   const scrollToSection = (id) => {
@@ -61,54 +56,8 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Top Navigation - Sticky */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white'
-      }`}>
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-sm">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-semibold text-gray-900">findmyniche</span>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection('how-it-works')} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                How it works
-              </button>
-              <button onClick={() => scrollToSection('example-insights')} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                Example insights
-              </button>
-              <button onClick={() => scrollToSection('pricing')} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                Pricing
-              </button>
-              <button onClick={onContact} className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-                Contact
-              </button>
-            </div>
-
-            {/* CTAs */}
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={onSignIn} className="text-gray-700 hover:text-gray-900">
-                Sign in
-              </Button>
-              <Button 
-                onClick={onGetStarted}
-                className="bg-blue-600 hover:bg-blue-700 shadow-sm"
-              >
-                Try for free
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 bg-gradient-to-b from-gray-50 to-white">
+      <section className="pt-[50px] pb-20 px-6 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Side - Content */}
@@ -123,7 +72,7 @@ export function LandingPage() {
                 <Button 
                   onClick={onGetStarted}
                   size="lg"
-                  className="bg-blue-600 hover:bg-blue-700 text-lg px-8 h-14 shadow-lg hover:shadow-xl transition-all"
+                  className="bg-essence text-lg px-8 h-14 shadow-lg hover:shadow-xl transition-all"
                 >
                   Try free market analysis
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -153,22 +102,22 @@ export function LandingPage() {
 
                 {/* Key Metrics Grid */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-lg border border-blue-200">
+                  <div className="p-4 bg-gradient-to-br from-essence/5 to-essence/10 rounded-lg border border-essence/20">
                     <div className="flex items-center justify-between mb-2">
-                      <Users className="w-5 h-5 text-blue-600" />
-                      <Badge className="bg-blue-200 text-blue-900 text-xs">
+                      <Users className="w-5 h-5 text-essence" />
+                      <Badge className="bg-essence/20 text-essence text-xs">
                         {insightPreview.metrics?.[0]?.badgeText}
                       </Badge>
                     </div>
                     {isLoading ? (
                       <div className="flex items-center justify-center h-20">
-                        <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-5 h-5 border-2 border-essence/40 border-t-transparent rounded-full animate-spin"></div>
                       </div>
                     ) : (
                       <>
-                        <div className="text-2xl font-bold text-blue-900 mb-1">{insightPreview.metrics?.[0]?.value}</div>
-                        <div className="text-sm text-blue-700 font-medium mb-1">{insightPreview.metrics?.[0]?.label}</div>
-                        <div className="text-xs text-blue-600">
+                        <div className="text-2xl font-bold text-dark mb-1">{insightPreview.metrics?.[0]?.value}</div>
+                        <div className="text-sm text-essence font-medium mb-1">{insightPreview.metrics?.[0]?.label}</div>
+                        <div className="text-xs text-dark/70">
                           {insightPreview.metrics?.[0]?.sublabel}
                         </div>
                       </>
@@ -311,11 +260,11 @@ export function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {/* Step 1 */}
               <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
+                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
                   <Map className="w-6 h-6 text-white" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">1</span>
+                  <span className="text-sm font-bold text-essence">1</span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   Choose a location
@@ -327,11 +276,11 @@ export function LandingPage() {
 
               {/* Step 2 */}
               <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
+                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
                   <Search className="w-6 h-6 text-white" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">2</span>
+                  <span className="text-sm font-bold text-essence">2</span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   Select a category
@@ -343,11 +292,11 @@ export function LandingPage() {
 
               {/* Step 3 */}
               <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
+                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
                   <Target className="w-6 h-6 text-white" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">3</span>
+                  <span className="text-sm font-bold text-essence">3</span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   Refine your niche
@@ -359,11 +308,11 @@ export function LandingPage() {
 
               {/* Step 4 */}
               <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
+                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
                   <BarChart3 className="w-6 h-6 text-white" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">4</span>
+                  <span className="text-sm font-bold text-essence">4</span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   Get your report
@@ -391,8 +340,8 @@ export function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-essence/10 rounded-lg flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-essence" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Competitive landscape
@@ -440,7 +389,7 @@ export function LandingPage() {
 
             <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
               <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                <MapPin className="w-6 h-6 text-indigo-600" />
+                <MapPin className="w-6 h-6 text-essence" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Location-specific insights
@@ -497,19 +446,19 @@ export function LandingPage() {
             {/* Market Gaps Section */}
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-4">
-                <Target className="w-5 h-5 text-blue-600" />
+                <Target className="w-5 h-5 text-essence" />
                 <h4 className="font-semibold text-gray-900">Market Gaps</h4>
               </div>
               <div className="space-y-3 blur-sm select-none">
-                <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                <div className="flex items-start gap-3 p-3 bg-essence/5 rounded-lg">
+                  <div className="w-2 h-2 bg-essence rounded-full mt-2"></div>
                   <div className="flex-1">
                     <div className="font-medium text-gray-900 mb-1">Specialty coffee near tech offices</div>
                     <div className="text-sm text-gray-600">High foot traffic area with limited premium options</div>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                <div className="flex items-start gap-3 p-3 bg-essence/5 rounded-lg">
+                  <div className="w-2 h-2 bg-essence rounded-full mt-2"></div>
                   <div className="flex-1">
                     <div className="font-medium text-gray-900 mb-1">Late-night service gap</div>
                     <div className="text-sm text-gray-600">Few competitors open after 8 PM in residential zones</div>
@@ -551,7 +500,7 @@ export function LandingPage() {
             {/* Lock Overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm">
               <div className="text-center px-6">
-                <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-16 h-16 bg-essence rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Lock className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -562,7 +511,7 @@ export function LandingPage() {
                 </p>
                 <Button 
                   onClick={onGetStarted}
-                  className="bg-blue-600 hover:bg-blue-700 shadow-lg"
+                  className="bg-essence hover:bg-essence/90 shadow-lg border-none"
                   size="lg"
                 >
                   Try free analysis
@@ -592,12 +541,12 @@ export function LandingPage() {
                 key={plan.name}
                 className={
                   plan.isPopular
-                    ? "p-8 bg-gradient-to-br from-blue-50 to-blue-100/50 border-2 border-blue-500 relative"
+                    ? "p-8 bg-gradient-to-br from-essence/5 to-essence/10 border-2 border-essence relative"
                     : "p-8 bg-white border-2 border-gray-200"
                 }
               >
                 {plan.isPopular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1">
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-essence text-white px-4 py-1 border-none">
                     Most Popular
                   </Badge>
                 )}
@@ -623,7 +572,7 @@ export function LandingPage() {
                     <li key={feature.text} className={`flex items-start gap-3 ${feature.included ? "" : "opacity-50"}`}>
                       {feature.included ? (
                         <Check
-                          className={`w-5 h-5 flex-shrink-0 mt-0.5 ${plan.isPopular ? "text-blue-600" : "text-green-600"}`}
+                          className={`w-5 h-5 flex-shrink-0 mt-0.5 ${plan.isPopular ? "text-essence" : "text-green-600"}`}
                         />
                       ) : (
                         <div className="w-5 h-5 border-2 border-gray-300 rounded flex-shrink-0 mt-0.5"></div>
@@ -647,7 +596,7 @@ export function LandingPage() {
                   variant={plan.isPopular ? undefined : "outline"}
                   className={
                     plan.isPopular
-                      ? "w-full h-12 bg-blue-600 hover:bg-blue-700 shadow-lg"
+                      ? "w-full h-12 bg-essence hover:bg-essence/90 shadow-lg border-none"
                       : "w-full h-12 border-2"
                   }
                 >
@@ -690,9 +639,9 @@ export function LandingPage() {
             </div>
 
             {/* Disclaimer */}
-            <Card className="p-6 bg-blue-50 border border-blue-200 max-w-3xl mx-auto">
+            <Card className="p-6 bg-essence/5 border border-essence/20 max-w-3xl mx-auto">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-essence rounded-lg flex items-center justify-center flex-shrink-0">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -706,28 +655,6 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-gray-800 pb-12 mb-12">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Target className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-lg font-semibold">findmyniche</span>
-            </div>
-            <div className="flex gap-8">
-              <button onClick={() => navigate("/privacy")} className="text-sm text-gray-400 hover:text-white">Privacy</button>
-              <button onClick={() => navigate("/terms")} className="text-sm text-gray-400 hover:text-white">Terms</button>
-              <button onClick={onContact} className="text-sm text-gray-400 hover:text-white">Contact</button>
-            </div>
-          </div>
-          <div className="text-center text-sm text-gray-500">
-            © {new Date().getFullYear()} findmyniche. All rights reserved.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
