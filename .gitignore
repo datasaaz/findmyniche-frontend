@@ -3,7 +3,8 @@ node_modules/
 .next/
 out/
 dist/
-
+legacy/
+guidelines/
 # Logs
 npm-debug.log*
 yarn-debug.log*
