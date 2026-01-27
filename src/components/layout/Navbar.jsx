@@ -11,18 +11,19 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../ui/navigation-menu";
 import { cn } from "../ui/utils";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [companyOpen, setCompanyOpen] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -69,12 +70,12 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-[100] bg-white h-[72px] flex items-center overflow-visible",
+        "fixed top-0 left-0 right-0 z-[100] bg-white h-[64px] flex items-center overflow-visible",
         scrolled 
           ? "shadow-sm border-b border-gray-100" 
           : "border-b border-transparent"
       )}
-      style={{ top: 0, position: 'fixed', height: '72px' }}
+      style={{ top: 0, position: 'fixed' }}
     >
       <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between h-full">
         {/* Logo */}
@@ -89,92 +90,70 @@ export function Navbar() {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-1 h-full">
-          {navLinks.map((link) => (
-            <div 
-              key={link.name}
-              className="relative flex items-center h-full group/nav"
-              onMouseEnter={() => setHoveredItem(link.name)}
-              onMouseLeave={() => setHoveredItem(null)}
-            >
-              <DropdownMenu open={hoveredItem === link.name} modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    onClick={() => link.isPath ? navigate(link.id) : scrollToSection(link.id)}
-                    className="px-4 py-2 text-[16px] font-semibold text-gray-800 group-hover/nav:text-black rounded-full transition-colors cursor-pointer outline-none"
-                  >
-                    {link.name}
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent 
-                  align="center" 
-                  sideOffset={0}
-                  className="w-64 p-3  bg-white shadow-xl border-gray-100 rounded-xl z-[110]"
-                  onMouseEnter={() => setHoveredItem(link.name)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                >
-                  <p className="text-xs text-gray-500 leading-relaxed font-normal">
-                    {link.description}
-                  </p>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          ))}
-
-          {/* Company Dropdown */}
-          <div 
-            className="relative flex items-center h-full group/nav"
-            onMouseEnter={() => setHoveredItem('Company')}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <DropdownMenu open={hoveredItem === 'Company'} modal={false}>
-              <DropdownMenuTrigger asChild>
-                <button className="px-4 py-2 text-[16px] font-semibold text-gray-800 group-hover/nav:text-black rounded-full transition-colors cursor-pointer flex items-center gap-1 outline-none">
-                  Company
-                  <ChevronDown className="w-4 h-4 opacity-50" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="center" 
-                sideOffset={0}
-                className="w-72 p-2 bg-white shadow-xl border-gray-100 rounded-xl z-[110]"
-                onMouseEnter={() => setHoveredItem('Company')}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
-                {companyLinks.map((item) => (
-                  <DropdownMenuItem 
-                    key={item.name}
-                    onClick={() => {
-                      navigate(item.path);
-                      setHoveredItem(null);
-                    }}
-                    className="flex flex-col items-start p-3 gap-1 cursor-pointer focus:bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <item.icon className="w-4 h-4 text-essence" />
-                      <span className="font-semibold text-dark">{item.name}</span>
-                    </div>
-                    <p className="text-xs text-gray-500 leading-relaxed pl-6">
-                      {item.description}
-                    </p>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <div className="hidden md:flex items-center h-full">
+          
         </div>
 
         {/* Desktop CTAs (Sensor Tower Style) */}
         <div className="hidden md:flex items-center gap-3">
+          <NavigationMenu className="relative">
+            <NavigationMenuList className="items-center gap-1">
+              {navLinks.map((link) => (
+                <NavigationMenuItem key={link.name} className="relative">
+                  <NavigationMenuTrigger 
+                    onClick={() => link.isPath ? navigate(link.id) : scrollToSection(link.id)}
+                    className="bg-transparent cursor-pointer hover:bg-gray-100 text-gray-800 hover:text-black font-semibold text-[16px] px-4 py-2 h-auto rounded-md transition-colors data-[state=open]:bg-gray-50 border-none"
+                  >
+                    {link.name}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="absolute left-1/2 top-full -translate-x-1/2 mt-2">
+                    <div className="w-64 p-4 bg-white shadow-xl rounded-xl border border-gray-100">
+                      <p className="text-xs text-gray-500 leading-relaxed font-normal">
+                        {link.description}
+                      </p>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ))}
+
+              <NavigationMenuItem className="relative">
+                <NavigationMenuTrigger className=" cursor-pointer bg-transparent hover:bg-gray-100 text-gray-800 hover:text-black font-semibold text-[16px] px-4 py-2 h-auto rounded-md transition-colors data-[state=open]:bg-gray-50 border-none">
+                  Company
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="absolute left-1/2 top-full -translate-x-1/2 mt-2">
+                  <div className="w-72 p-2 bg-white shadow-xl rounded-xl border border-gray-100">
+                    {companyLinks.map((item) => (
+                      <div 
+                        key={item.name}
+                        onClick={() => {
+                          navigate(item.path);
+                        }}
+                        className="flex flex-col items-start p-3 gap-1 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors group/item"
+                      >
+                        <div className="flex items-center gap-2 w-full">
+                          <item.icon className="w-4 h-4 text-essence" />
+                          <span className="font-semibold text-dark group-hover/item:text-essence transition-colors">{item.name}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 leading-relaxed pl-6">
+                          {item.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          
           <Button 
             onClick={() => navigate("/input")}
-            className="bg-essence hover:bg-dark/90 text-white shadow-sm px-6 py-5 rounded-full font-bold text-sm border-none"
+            className=" fs-16 cursor-pointer bg-dark hover:bg-dark/90  text-white shadow-sm px-6 py-5 rounded-full font-semibold text-sm border-none"
           >
             Contact Sales
           </Button>
           <Button 
             onClick={() => navigate("/login")}
-            className="bg-dark hover:bg-dark/90 text-white shadow-sm px-6 py-5 rounded-full font-bold text-sm border-none"
+            className=" fs-16 cursor-pointer bg-dark hover:bg-dark/90   text-white shadow-sm px-6 py-5 rounded-full font-semibold text-sm border-none"
           >
             Log In
           </Button>
@@ -182,7 +161,7 @@ export function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden p-2 text-gray-600 hover:text-black"
+          className=" cursor-pointer md:hidden p-2 text-gray-600 hover:text-black"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -198,7 +177,7 @@ export function Navbar() {
                 <button
                   key={link.name}
                   onClick={() => link.isPath ? navigate(link.id) : scrollToSection(link.id)}
-                  className="block w-full text-left text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                  className=" cursor-pointer block w-full text-left text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
                 >
                   {link.name}
                 </button>
@@ -208,10 +187,10 @@ export function Navbar() {
               <div className="space-y-4">
                 <button 
                   onClick={() => setCompanyOpen(!companyOpen)}
-                  className="flex items-center justify-between w-full text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                  className=" cursor-pointer flex items-center justify-between w-full text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
                 >
                   Company
-                  <ChevronDown className={cn("w-5 h-5 transition-transform", companyOpen && "rotate-180")} />
+                  {/* <ChevronDown className={cn("w-5 h-5 transition-transform", companyOpen && "rotate-180")} /> */}
                 </button>
                 {companyOpen && (
                   <div className="pl-4 space-y-4 border-l-2 border-gray-100">
@@ -222,7 +201,7 @@ export function Navbar() {
                           navigate(item.path);
                           setIsOpen(false);
                         }}
-                        className="flex flex-col gap-1 w-full text-left"
+                        className=" cursor-pointer flex flex-col gap-1 w-full text-left hover:bg-gray-50 rounded-lg transition-colors group/item"
                       >
                         <span className="text-base font-medium text-gray-800">{item.name}</span>
                         <span className="text-sm text-gray-500">{item.description}</span>
@@ -237,13 +216,13 @@ export function Navbar() {
               <Button 
                 variant="outline" 
                 onClick={() => navigate("/login")}
-                className="w-full h-12 text-lg font-medium border-2 rounded-full"
+                className=" fs- w-full h-12 text-lg font-normal border-2 rounded-full hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 Log In
               </Button>
               <Button 
                 onClick={() => navigate("/input")}
-                className="w-full h-12 text-lg font-medium bg-dark hover:bg-dark/90 rounded-full"
+                className="w-full h-12 text-lg font-normal bg-dark hover:bg-dark/90 rounded-full  transition-colors cursor-pointer"
               >
                 Try for free
                 <ArrowRight className="w-5 h-5 ml-2" />

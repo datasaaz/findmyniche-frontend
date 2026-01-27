@@ -16,7 +16,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-[#1a1a1a] text-white py-12 px-6">
+    <footer className="bg-[#1a1a1a] text-white py-10 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
         {/* Logo (Left) */}
         <div className="flex items-center gap-2">
@@ -27,13 +27,13 @@ export function Footer() {
         </div>
 
         {/* Links and Copyright (Right) */}
-        <div className="flex flex-col items-center md:items-end gap-4">
-          <nav className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2">
+        <div className="flex flex-col items-center md:items-end gap-2">
+          <nav className="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-2">
             {footerLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-[13px] font-medium text-gray-300 hover:text-white transition-colors"
+                className="text-[16px] font-semibold text-gray-100 hover:text-white transition-colors"
               >
                 {link.name}
               </Link>
@@ -41,10 +41,10 @@ export function Footer() {
           </nav>
           
           <div className="flex flex-col items-center md:items-end gap-1">
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[15px] text-gray-100">
               Copyright © 2026 Find My Niche. All rights reserved.
             </p>
-            <button className="text-[12px] text-gray-500 hover:text-gray-300 transition-colors underline underline-offset-4">
+            <button className=" cursor-pointer text-[15px] font-semibold text-gray-100 hover:text-gray-300 transition-colors  underline-offset-4">
               Manage Cookies
             </button>
           </div>

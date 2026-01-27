@@ -25,6 +25,10 @@ export const getRelevantCategories = async (query) => {
   return response.data;
 };
 
+export const getAnnouncement = async () => {
+  const response = await api.get("announcement");
+  return response.data;
+};
 
 export const CreatePreviewApi = async (payload) => {
   const response = await api.post("report/preview", payload);

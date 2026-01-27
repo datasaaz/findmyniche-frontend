@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getLanding } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
+import { BarChart, Bar, LineChart as RechartsLineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="pt-[50px] pb-20 px-6 bg-gradient-to-b from-gray-50 to-white">
+      <section className="pt-[25px] pb-20 px-6 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Side - Content */}
@@ -66,13 +67,13 @@ export function LandingPage() {
                 Discover market opportunities before you invest
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Location-based market intelligence that reveals competition, gaps, and real-world demand — powered by maps, reviews, and public data.
+                Location-based market intelligence that reveals competition, gaps, and real-world demand powered by maps, reviews, and public data.
               </p>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <Button 
                   onClick={onGetStarted}
                   size="lg"
-                  className="bg-essence text-lg px-8 h-14 shadow-lg hover:shadow-xl transition-all"
+                  className="bg-essence font-semibold text-lg px-8 h-14 shadow-lg hover:shadow-xl transition-all"
                 >
                   Try free market analysis
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -182,9 +183,9 @@ export function LandingPage() {
                   </div>
                 </div>
 
-                {/* Market Saturation Chart with Context */}
+                {/* Market Saturation Charts with Context */}
                 <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <BarChart3 className="w-4 h-4 text-gray-700" />
                       <div className="text-sm font-semibold text-gray-900">{insightPreview.competition?.title}</div>
@@ -194,37 +195,83 @@ export function LandingPage() {
                     </Badge>
                   </div>
                   
-                  {/* Chart */}
-                  <div className="mb-3">
-                    <div className="flex items-end justify-between gap-2 h-20 mb-2">
-                      {insightPreview.competition?.bars?.map((bar, index) => (
-                        <div key={bar.label} className="flex-1 flex flex-col items-center justify-end gap-1 h-full">
-                          <div
-                            className={`w-full ${competitionBarStyles[index]?.colorClass ?? "bg-gray-300"} rounded-t transition-all ${competitionBarStyles[index]?.hoverClass ?? ""}`}
-                            style={{ height: `${bar.height}%` }}
-                          ></div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Zone labels */}
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      {insightPreview.competition?.bars?.map((bar) => (
-                        <span key={bar.label} className="flex-1 text-center">{bar.label}</span>
-                      ))}
-                    </div>
+                  {/* Charts Container */}
+                  <div className="space-y-3">
+                    {/* Bar Chart - Horizontal */}
+                    {/* {insightPreview.competition?.bars && insightPreview.competition.bars.length > 0 && (
+                      <div className="bg-white rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+                        <div className="text-xs font-medium text-gray-600 mb-3">Competition Distribution</div>
+                        <ResponsiveContainer width="100%" height={180}>
+                          <BarChart data={insightPreview.competition.bars} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="0" stroke="#f3f4f6" vertical={false} />
+                            <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} />
+                            <YAxis tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "6px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }} cursor={{ fill: "rgba(16, 185, 129, 0.05)" }} />
+                            <Bar dataKey="height" fill="#00CFB8" radius={[0, 0, 0, 0]} maxBarSize={40} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )} */}
+
+                    {/* Bar Chart - Vertical */}
+                    {insightPreview.competition?.bars && insightPreview.competition.bars.length > 0 && (
+                      <div className="bg-white rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+                        <div className="text-xs font-medium text-gray-600 mb-3">Market Density</div>
+                        <ResponsiveContainer width="100%" height={180}>
+                          <BarChart data={insightPreview.competition.bars} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="0" stroke="#f3f4f6" horizontal={false} />
+                            <XAxis type="number" tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} />
+                            <YAxis dataKey="label" type="category" tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} width={25} />
+                            <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "6px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }} cursor={{ fill: "rgba(59, 130, 246, 0.05)" }} />
+                            <Bar dataKey="height" fill="#00CFB8" radius={[0, 2, 2, 0]} maxBarSize={30} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
+
+                    {/* Line Chart */}
+                    {/* {insightPreview.competition?.bars && insightPreview.competition.bars.length > 0 && (
+                      <div className="bg-white rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+                        <div className="text-xs font-medium text-gray-600 mb-3">Market Trend</div>
+                        <ResponsiveContainer width="100%" height={180}>
+                          <RechartsLineChart data={insightPreview.competition.bars} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="0" stroke="#f3f4f6" vertical={false} />
+                            <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} />
+                            <YAxis tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "6px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }} cursor={{ fill: "rgba(59, 130, 246, 0.05)" }} />
+                            <Line type="natural" dataKey="height" stroke="#0bf5d6c7" strokeWidth={2.5} dot={false} isAnimationActive={true} />
+                          </RechartsLineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )} */}
+
+                    {/* Area Chart */}
+                    {/* {insightPreview.competition?.bars && insightPreview.competition.bars.length > 0 && (
+                      <div className="bg-white rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+                        <div className="text-xs font-medium text-gray-600 mb-3">Market Saturation</div>
+                        <ResponsiveContainer width="100%" height={180}>
+                          <AreaChart data={insightPreview.competition.bars} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="0" stroke="#f3f4f6" vertical={false} />
+                            <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} />
+                            <YAxis tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} />
+                            <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "6px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }} cursor={{ fill: "rgba(245, 158, 11, 0.05)" }} />
+                            <Area type="natural" dataKey="height" fill="#c7feedff" stroke="#0bf5d6c7" strokeWidth={2} isAnimationActive={true} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )} */}
                   </div>
 
                   {/* Legend & Insight */}
-                  <div className="flex items-start gap-3 pt-3 border-t border-gray-200">
+                  <div className="flex items-start gap-3 pt-3 mt-3 border-t border-gray-200">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 text-xs mb-2">
-                        {insightPreview.competition?.legend?.map((item, index) => (
+                        {/* {insightPreview.competition?.legend?.map((item, index) => (
                           <div key={item.label} className="flex items-center gap-1">
                             <div className={`w-3 h-3 ${competitionLegendStyles[index]?.colorClass ?? "bg-gray-300"} rounded`}></div>
                             <span className="text-gray-600">{item.label}</span>
                           </div>
-                        ))}
+                        ))} */}
                       </div>
                       <div className="text-xs text-gray-600 leading-relaxed">
                         <span className="font-semibold text-gray-900">Insight:</span> {insightPreview.competition?.insight}
@@ -242,85 +289,101 @@ export function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-24 px-6 bg-white">
+      <section id="how-it-works" className="mt-24 py-18 px-2 bg-essence ">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              How It Works
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Get actionable market intelligence in four simple steps
-            </p>
-          </div>
+            {/* <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                How It Works
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Get actionable market intelligence in four simple steps
+              </p>
+            </div> */}
 
           <div className="relative">
             {/* Connector Line */}
-            <div className="hidden lg:block absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-blue-300 to-blue-200" style={{ left: '12.5%', right: '12.5%' }}></div>
+            {/* <div className="hidden lg:block absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-blue-300 to-blue-200" style={{ left: '12.5%', right: '12.5%' }}></div> */}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
               {/* Step 1 */}
-              <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
-                  <Map className="w-6 h-6 text-white" />
+              <div className=" text-center flex items-center justify-center flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="icon1.svg" alt="" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <span className="text-sm font-bold text-essence">1</span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div>
+                <h3 className="text-[28px] font-semibold  ">
                   Choose a location
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className=" text-sm text-[20px] text-black">
                   Search any city, neighborhood, or place using Google Maps
                 </p>
-              </Card>
+                </div>
+              </div>
+
 
               {/* Step 2 */}
-              <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
-                  <Search className="w-6 h-6 text-white" />
+              <div className=" text-center flex items-center justify-center flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="icon1.svg" alt="" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <span className="text-sm font-bold text-essence">2</span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div>
+                <h3 className="text-[28px] font-semibold  ">
                   Select a category
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className=" text-sm text-[20px] text-black">
                   Restaurants, retail, services, or any business category
                 </p>
-              </Card>
+                </div>
+              </div>
+
 
               {/* Step 3 */}
-              <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
-                  <Target className="w-6 h-6 text-white" />
+              <div className=" text-center flex items-center justify-center flex-col  relative items-center">
+                <div className="w-24 h-[100px]   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="icon1.svg" alt="" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <span className="text-sm font-bold text-essence">3</span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div>
+                <h3 className="text-[28px] font-semibold  ">
                   Refine your niche
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className=" text-sm text-[20px] text-black">
                   Narrow down with smart subcategory suggestions
                 </p>
-              </Card>
+                </div>
+              </div>
 
-              {/* Step 4 */}
-              <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow relative">
-                <div className="w-12 h-12 bg-essence rounded-xl flex items-center justify-center mb-4 shadow-sm relative z-10">
-                  <BarChart3 className="w-6 h-6 text-white" />
+
+              <div className=" text-center flex items-center justify-center flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="icon1.svg" alt="" />
                 </div>
                 <div className="absolute top-6 right-6 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <span className="text-sm font-bold text-essence">4</span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div>
+                <h3 className="text-[28px] font-semibold  ">
                   Get your report
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className=" text-sm text-[20px] text-black">
                   Instant insights on competition, gaps, and risks
                 </p>
-              </Card>
+                </div>
+              </div>
+
+              
             </div>
           </div>
         </div>
@@ -640,7 +703,7 @@ export function LandingPage() {
 
             {/* Disclaimer */}
             <Card className="p-6 bg-essence/5 border border-essence/20 max-w-3xl mx-auto">
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-essence rounded-lg flex items-center justify-center flex-shrink-0">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
