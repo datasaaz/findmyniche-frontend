@@ -7,3 +7,8 @@
 body {
   font-family: var(--font-sans);
 }
+
+
+.fs-16 {
+  font-size: 16px !important;
+}
