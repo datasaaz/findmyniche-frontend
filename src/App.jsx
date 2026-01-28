@@ -20,6 +20,9 @@ import { TermsOfService } from "./pages/TermsOfService";
 import { Contact } from "./pages/Contact";
 import { Settings } from "./pages/Settings";
 import { ReportList } from "./pages/ReportList";
+import { About } from "./pages/About";
+import { OurData } from "./pages/OurData";
+import { BillingPage } from "./pages/BillingPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function App() {
@@ -38,7 +41,7 @@ export default function App() {
           <Route path="/preview" element={<ReportPreview />} />
           <Route path="/report" element={<ReportPage />} />
           <Route path="/report/detail" element={<ReportDetail />} />
-          <Route path="/billing" element={<BillingSubscription />} />
+          <Route path="/billing/upgrade" element={<BillingSubscription />} />
           <Route path="/checkout" element={<BillingCheckout />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/report-loading" element={<ReportLoading />} />
@@ -47,6 +50,8 @@ export default function App() {
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/data" element={<OurData />} />
         </Route>
 
         {/* Dashboard/Protected Routes */}
@@ -54,6 +59,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reports" element={<ReportList />} />
           <Route path="/report/:id" element={<ReportDetail />} />
+          <Route path="/billing" element={<BillingPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

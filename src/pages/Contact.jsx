@@ -80,7 +80,7 @@ export function Contact({ onBack } = {}) {
 
             <Card className="p-6 bg-blue-50 border border-blue-200">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-essence rounded-lg flex items-center justify-center flex-shrink-0">
                   <Clock className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -187,7 +187,7 @@ export function Contact({ onBack } = {}) {
 
                     <Button
                       type="submit"
-                      className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg"
+                      className="w-full h-12 bg-essence hover:bg-cyan-300 text-lg"
                       disabled={!isFormValid}
                     >
                       <Send className="w-4 h-4 mr-2" />

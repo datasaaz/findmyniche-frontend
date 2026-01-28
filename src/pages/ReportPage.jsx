@@ -142,7 +142,7 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
               <Badge className="bg-blue-100 text-blue-700 border-blue-300">
                 Free report (limited)
               </Badge>
-              <Button onClick={handleUpgrade} className="bg-blue-600 hover:bg-blue-700 gap-2">
+              <Button onClick={handleUpgrade} className="bg-essence hover:bg-cyan-300 gap-2">
                 Unlock full report
                 <Lock className="w-4 h-4" />
               </Button>
@@ -224,7 +224,7 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
         <section className="mb-12">
           <Card className="p-8 border-2 border-blue-200 bg-white">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-essence rounded-xl flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
               Executive Verdict
@@ -250,19 +250,19 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
               <h3 className="font-semibold text-gray-900 mb-3">Key Reasons:</h3>
               <ul className="space-y-2">
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2"></div>
+                  <div className="w-1.5 h-1.5 bg-essence rounded-full mt-2"></div>
                   <span className="text-gray-700">Moderate competition with average ratings of 4.1/5.0</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2"></div>
+                  <div className="w-1.5 h-1.5 bg-essence rounded-full mt-2"></div>
                   <span className="text-gray-700">High-opportunity gaps identified in premium and late-night segments</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2"></div>
+                  <div className="w-1.5 h-1.5 bg-essence rounded-full mt-2"></div>
                   <span className="text-gray-700">Customer reviews indicate unmet demand in specific categories</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2"></div>
+                  <div className="w-1.5 h-1.5 bg-essence rounded-full mt-2"></div>
                   <span className="text-gray-700">Market maturity suggests established customer base but limited innovation</span>
                 </li>
               </ul>
@@ -309,13 +309,13 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
 
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm">
               <div className="text-center px-6">
-                <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-14 h-14 bg-essence rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Lock className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                   Detailed competitive breakdown available in full report
                 </h3>
-                <Button onClick={handleUpgrade} className="bg-blue-600 hover:bg-blue-700 mt-3">
+                <Button onClick={handleUpgrade} className="bg-essence hover:bg-cyan-300 mt-3">
                   Unlock chart
                 </Button>
               </div>
@@ -363,7 +363,7 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
                     <div className="flex items-center gap-3">
                       <Lock className="w-5 h-5 text-gray-400" />
                       <span className="font-medium text-gray-700">Unlock full rationale and evidence</span>
-                      <Button size="sm" onClick={handleUpgrade} className="bg-blue-600 hover:bg-blue-700">
+                      <Button size="sm" onClick={handleUpgrade} className="bg-essence hover:bg-cyan-300">
                         Unlock
                       </Button>
                     </div>
@@ -497,7 +497,7 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
                 Detailed data sources, review signals, and raw evidence supporting this analysis are available
                 in the full report. This includes competitor lists, review excerpts, and data provenance documentation.
               </p>
-              <Button onClick={handleUpgrade} size="lg" className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={handleUpgrade} size="lg" className="bg-essence hover:bg-cyan-300">
                 <Lock className="w-5 h-5 mr-2" />
                 Unlock to view evidence
               </Button>
@@ -508,7 +508,7 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
         <section className="mb-12">
           <Card className="p-10 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 shadow-lg">
             <div className="max-w-2xl mx-auto text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-essence rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Unlock the full report</h2>
@@ -548,7 +548,7 @@ export function ReportPage({ location, category, onBack, onUpgrade } = {}) {
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Button size="lg" onClick={handleUpgrade} className="bg-blue-600 hover:bg-blue-700 text-lg px-8">
+                <Button size="lg" onClick={handleUpgrade} className="bg-essence hover:bg-cyan-300 text-lg px-8">
                   Upgrade to unlock full access
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>

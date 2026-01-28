@@ -255,7 +255,7 @@ export function ReportDetail({
                   </Button>
                 </div>
               ) : (
-                <Button onClick={handleUpgradeClick} className="bg-blue-600 hover:bg-blue-700 gap-2">
+                <Button onClick={handleUpgradeClick} className="bg-essence hover:bg-cyan-300 gap-2">
                   <Sparkles className="w-4 h-4" />
                   Upgrade to Pro
                 </Button>

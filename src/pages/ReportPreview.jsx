@@ -260,7 +260,7 @@ export function ReportPreview({
 
                 <div className="blur-md select-none space-y-3 mb-6">
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                    <div className="w-2 h-2 bg-essence rounded-full mt-2"></div>
                     <div>
                       <div className="font-medium text-gray-900 mb-1">
                         Premium service gap in residential areas
@@ -271,7 +271,7 @@ export function ReportPreview({
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                    <div className="w-2 h-2 bg-essence rounded-full mt-2"></div>
                     <div>
                       <div className="font-medium text-gray-900 mb-1">
                         Late-night and weekend service opportunity
@@ -282,7 +282,7 @@ export function ReportPreview({
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                    <div className="w-2 h-2 bg-essence rounded-full mt-2"></div>
                     <div>
                       <div className="font-medium text-gray-900 mb-1">
                         Delivery-first model potential
@@ -297,7 +297,7 @@ export function ReportPreview({
 
               <div className="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-20">
                 <div className="text-center px-6">
-                  <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <div className="w-16 h-16 bg-essence rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                     <Lock className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -308,7 +308,7 @@ export function ReportPreview({
                   </p>
                   <Button
                     onClick={handleUnlockClick}
-                    className="bg-blue-600 hover:bg-blue-700 shadow-lg"
+                    className="bg-essence hover:bg-cyan-300 shadow-lg"
                     size="lg"
                   >
                     Create free account
@@ -350,7 +350,7 @@ export function ReportPreview({
                 <ul className="space-y-4 mb-8">
                   {reportPreviewData.benefits.map((benefit) => (
                     <li key={benefit.id} className="flex items-start gap-3">
-                      <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-6 h-6 bg-essence rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                         <Check className="w-4 h-4 text-white" />
                       </div>
                       <div>
@@ -364,7 +364,7 @@ export function ReportPreview({
                 <div className="space-y-3">
                   <Button
                     onClick={handleUnlockClick}
-                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-base font-semibold shadow-lg"
+                    className="w-full h-12 bg-essence hover:bg-cyan-300 text-base font-semibold shadow-lg"
                   >
                     Create free account
                   </Button>

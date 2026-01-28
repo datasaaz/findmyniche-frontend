@@ -128,7 +128,7 @@ export function ReportProcessingScreen({
                           isComplete
                             ? "bg-green-500 shadow-lg shadow-green-200"
                             : isCurrent
-                            ? "bg-blue-600 shadow-lg shadow-blue-200 animate-pulse"
+                            ? "bg-essence shadow-lg shadow-blue-200 animate-pulse"
                             : "bg-gray-100"
                         }`}
                       >
@@ -292,7 +292,7 @@ export function FreeUserProcessingPreview({ currentStep = 3, onSignUp }) {
                           isComplete
                             ? "bg-green-500 shadow-lg"
                             : isCurrent
-                            ? "bg-blue-600 shadow-lg animate-pulse"
+                            ? "bg-essence shadow-lg animate-pulse"
                             : "bg-gray-100"
                         }`}
                       >
@@ -377,7 +377,7 @@ export function BackgroundProcessingIndicator({
       onClick={onClick}
       className="w-full flex items-center gap-3 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 transition-colors text-left"
     >
-      <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+      <div className="w-10 h-10 bg-essence rounded-lg flex items-center justify-center flex-shrink-0">
         <Loader2 className="w-5 h-5 text-white animate-spin" />
       </div>
 

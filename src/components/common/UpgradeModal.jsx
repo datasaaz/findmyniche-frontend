@@ -211,7 +211,7 @@ export function UpgradeModal({
                       <span className="text-lg font-bold text-gray-900">
                         Pro Plan
                       </span>
-                      <div className="px-2 py-0.5 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                      <div className="px-2 py-0.5 bg-essence text-white text-xs font-semibold rounded-full">
                         POPULAR
                       </div>
                     </div>

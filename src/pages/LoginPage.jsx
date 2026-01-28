@@ -49,7 +49,7 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col">
-      <nav className="bg-white border-b border-gray-200">
+      {/* <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export function LoginPage() {
             </Link>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       <main className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-[420px]">
