@@ -38,7 +38,7 @@ export function Contact({ onBack } = {}) {
 
   return (
     <div className="min-h-screen bg-white">
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      {/* <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <button onClick={handleBack} className="flex items-center gap-2">
@@ -53,7 +53,7 @@ export function Contact({ onBack } = {}) {
             </Button>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       <div className="max-w-4xl mx-auto px-6 py-16">
         <div className="text-center mb-12">

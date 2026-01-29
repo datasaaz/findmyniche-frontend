@@ -152,7 +152,7 @@ export function Navbar() {
           </NavigationMenu>
           
           <Button 
-            onClick={() => navigate("/input")}
+            onClick={() => navigate("/contact")}
             className=" fs-16 cursor-pointer bg-dark hover:bg-dark/90  text-white shadow-sm px-6 py-5 rounded-full font-semibold text-sm border-none"
           >
             Contact Sales
