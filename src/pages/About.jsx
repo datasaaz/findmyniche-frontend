@@ -224,27 +224,19 @@ export function About({ onBack, onContact } = {}) {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-20 border-t border-gray-200">
-        <div className="max-w-4xl mx-auto  text-center">
-          <h2 className="text-[28px] font-bold text-gray-900 mb-6">Ready to discover your niche?</h2>
-          <p className="text-[20px] text-gray-600 mb-10">
-            Join thousands of entrepreneurs making data-driven business decisions
-          </p>
+      <section className="bg-essence py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-5xl font-normal text-gray-900 mb-8">
+            Ready to get started?
+          </h2>
+          
           <div className="flex gap-4 justify-center flex-wrap">
             <Button
               onClick={handleBack}
               size="lg"
-              className="bg-essence text-white hover:bg-cyan-300 font-semibold px-8 rounded-full"
+              className="fs-18 cursor-pointer bg-dark hover:bg-dark/90 text-white shadow-sm px-22 py-6 rounded-full font-semibold text-lg border-none"
             >
-              Get Started
-            </Button>
-            <Button
-              onClick={handleContact}
-              size="lg"
-              
-            className=" fs-16 cursor-pointer bg-dark hover:bg-dark/90   text-white shadow-sm px-6 py-5 rounded-full font-semibold text-sm border-none"
-            >
-              Contact Us
+              Sign Up For Free
             </Button>
           </div>
         </div>

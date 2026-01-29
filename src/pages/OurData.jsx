@@ -555,7 +555,7 @@ export function OurData({ onBack, onContact } = {}) {
 
       <section className="bg-essence py-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-5xl font-normal text-gray-900 mb-6">
+          <h2 className="text-5xl font-normal text-gray-900 mb-8">
             Ready to get started?
           </h2>
           
