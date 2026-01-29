@@ -53,27 +53,32 @@ export function OurData({ onBack, onContact } = {}) {
         </div>
       </header> */}
 
-      <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h1 className="text-xl text-gray-600 mb-4">Our Data</h1>
-              <h2 className="text-8xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-                Responsibly Sourced Data
+      <section className="py-24 lg:py-38">
+        <div className="max-w-7xl mx-auto ">
+          <div className="grid lg:grid-cols-5 gap-24 items-center">
+            <div className="lg:col-span-3 ">
+              <h1 className="text-[68px] font-thin text-gray-900 mb-">Better data comes from</h1>
+              <h2 className="text-[68px] font-bold text-gray-900 mb-6 leading-tight">
+                Real People
               </h2>
-              <p className="text-[24px] text-gray-700 mb-8 leading-relaxed">
-                Transparent, ethical, and trustworthy market intelligence you can rely on
-              </p>
-              <Button
-                onClick={handleContact}
-                size="lg"
-                className="fs-18 cursor-pointer bg-dark hover:bg-dark/90 text-white shadow-sm px-22 py-6 rounded-full font-semibold text-lg border-none"
+              <p className="text-[24px] text-gray-800 mb-16 leading-relaxed">
+              Learn how we cultivate our unique data estate so you can understand the trends shaping nearly every business in the global digital economy.              </p>
+                            <Button
+                              onClick={handleContact}
+                              size="lg"
+                              // variant="outline"
+                className="fs-18 cursor-pointer bg-white text-black border border-black hover:bg-gray-100 shadow-sm px-22 py-7 rounded-full font-semibold text-lg"
               >
-                Learn More
+                Request Demo
               </Button>
             </div>
+            <div className="lg:col-span-2">
+              <img  className="w-full rounded-2xl h-full object-cover"  src="Our_data_hero.webp"
+/>
 
-            <div className="grid grid-cols-2 gap-4">
+            </div>
+
+            {/* <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4">
                 <div className="h-48 rounded-2xl overflow-hidden shadow-lg">
                   <ImageWithFallback
@@ -106,31 +111,22 @@ export function OurData({ onBack, onContact } = {}) {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
 
-      <section className="bg-essence py-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h3 className="text-3xl font-bold text-gray-900 mb-8">Data Quality Metrics</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto text-gray-900">
-            <div>
-              <div className="text-4xl font-bold mb-2">15+</div>
-              <div className="text-sm text-gray-800">Verified Sources</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">99.8%</div>
-              <div className="text-sm text-gray-800">Accuracy Rate</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-sm text-gray-800">Monitoring</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">100%</div>
-              <div className="text-sm text-gray-800">Compliant</div>
-            </div>
+      <section className="bg-essence py-8">
+        <div className="max-w-7xl mx-auto 6">
+          <h3 className="text-center text-gray-900 font-semibold mb-10 text-[24px]">
+            Trusted by entrepreneurs worldwide
+          </h3>
+          <div className="flex flex-wrap justify-center items-center gap-12 lg:gap-16 ">
+            <img className=" h-12" src="brand1.svg" />
+            <img className=" h-12" src="brand1.svg" />
+            <img className=" h-12" src="brand1.svg" />
+            <img className=" h-12" src="brand1.svg" />
+            <img className=" h-12" src="brand1.svg" />
           </div>
         </div>
       </section>
@@ -139,8 +135,8 @@ export function OurData({ onBack, onContact } = {}) {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Trusted Data Sources</h2>
-              <div className="text-[20px] space-y-4 text-gray-700 leading-relaxed">
+              <h2 className="text-[28px] font-semibold text-gray-900 mb-6">Trusted Data Sources</h2>
+              <div className="text-[20px] space-y-4 text-gray-900 leading-relaxed">
                 <p>
                   Every data point in findmyniche comes from verified, reputable sources. We
                   partner with leading data providers, government agencies, and commercial
@@ -157,7 +153,7 @@ export function OurData({ onBack, onContact } = {}) {
                   confident business decisions.
                 </p>
               </div>
-              <div className="mt-8 space-y-3">
+              {/* <div className="mt-8 space-y-3">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -185,10 +181,10 @@ export function OurData({ onBack, onContact } = {}) {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
-            <div className="h-full min-h-[500px] rounded-2xl overflow-hidden shadow-xl">
+            <div className="max-h-[450px] rounded-2xl overflow-hidden shadow-xl">
               <ImageWithFallback
                 src="https://images.unsplash.com/flagged/photo-1579274216947-86eaa4b00475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5JTIwc2VydmVyJTIwZGF0YSUyMGNlbnRlcnxlbnwxfHx8fDE3Njk2MDEzMzN8MA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Data infrastructure"
@@ -199,7 +195,79 @@ export function OurData({ onBack, onContact } = {}) {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-20 lg:py-32">
+
+       <section id="how-it-works" className="mt-24 py-18 px-2 bg-secondary ">
+        <div className="max-w-7xl mx-auto">
+            
+          <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+              {/* Step 1 */}
+              <div className=" text-center flex items-center justify-start flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="security.svg" alt="" />
+                </div>
+                
+                <div>
+                <h3 className="text-[28px] font-semibold text-white leading-tight mb-4">
+                  We maintain total ownership of our panel data
+
+                </h3>
+                <p className=" text-sm text-[20px] text-white leading-tight">
+                  We own our data supply chain from end-to-end ensuring our data is never compromised
+                </p>
+                </div>
+              </div>
+
+
+              {/* Step 2 */}
+              <div className=" text-center flex items-center justify-start flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="security.svg" alt="" />
+                </div>
+                
+                <div>
+                <h3 className="text-[28px] font-semibold text-white leading-tight mb-4">
+                  World Class Security and Privacy Practices
+                </h3>
+                <p className=" text-sm text-[20px] text-white leading-tight">
+                 DFA or GAID have never been used to supplement any Sensor Tower product with deterministic personal data
+                </p>
+                </div>
+              </div>
+
+
+              {/* Step 3 */}
+              <div className=" text-center flex items-center justify-start flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="security.svg" alt="" />
+                </div>
+                
+                <div>
+                <h3 className="text-[28px] font-semibold text-white leading-tight mb-4">
+                  We Only Collect De-identified Information
+
+                </h3>
+                <p className=" text-sm text-[20px] text-white leading-tight">
+                  Prior to leaving any panelist’s device, all information that could be used to personally identify your users is de-identified
+
+                </p>
+                </div>
+              </div>
+
+
+              
+
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* <section className="bg-gray-50 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
             Comprehensive Data Coverage
@@ -270,7 +338,7 @@ export function OurData({ onBack, onContact } = {}) {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-6">
@@ -284,7 +352,7 @@ export function OurData({ onBack, onContact } = {}) {
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Data Methodology</h2>
+              <h2 className="text-[28px] font-semibold text-gray-900 mb-2">Our Data Methodology</h2>
               <div className="text-[20px] space-y-4 text-gray-700 leading-relaxed mb-8">
                 <p>
                   We follow a rigorous four-step process to ensure the highest quality market
@@ -351,7 +419,7 @@ export function OurData({ onBack, onContact } = {}) {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Privacy & Security First</h2>
+              <h2 className="text-[28px] font-semibold text-gray-900 mb-6">Privacy & Security First</h2>
               <div className="text-[20px] space-y-4 text-gray-700 leading-relaxed mb-8">
                 <p>
                   We take data privacy seriously. Every piece of data we use is ethically
@@ -363,39 +431,16 @@ export function OurData({ onBack, onContact } = {}) {
                   personally identifiable information. We believe in providing powerful market
                   insights while respecting individual privacy.
                 </p>
+                <p>
+                  Our platform uses only aggregated, anonymized data that contains zero
+                  personally identifiable information. We believe in providing powerful market
+                  insights while respecting individual privacy.
+                </p>
               </div>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <Lock className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-gray-900">No personal data</div>
-                    <p className="text-sm text-gray-600">
-                      Only aggregated, anonymized data with zero PII
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Lock className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-gray-900">Enterprise-grade security</div>
-                    <p className="text-sm text-gray-600">
-                      End-to-end encryption and regular security audits
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Lock className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-gray-900">Full compliance</div>
-                    <p className="text-sm text-gray-600">
-                      GDPR, CCPA, and all major data protection regulations
-                    </p>
-                  </div>
-                </div>
-              </div>
+              
             </div>
 
-            <div className="h-full min-h-[500px] rounded-2xl overflow-hidden shadow-xl">
+            <div className="h-full max-h-[400px] rounded-2xl overflow-hidden shadow-xl">
               <ImageWithFallback
                 src="https://images.unsplash.com/photo-1765046255479-669cf07a0230?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxkYXRhJTIwdmlzdWFsaXphdGlvbiUyMGFic3RyYWN0fGVufDF8fHx8MTc2OTU5ODI3OXww&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Security and privacy"
@@ -406,28 +451,121 @@ export function OurData({ onBack, onContact } = {}) {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-20 border-t border-gray-200">
+
+      <section id="how-it-works" className="mt-24 py-18 px-2 bg-secondary ">
+        <div className="max-w-7xl mx-auto">
+            
+          <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+              {/* Step 1 */}
+              <div className=" text-center flex items-center justify-start flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="security.svg" alt="" />
+                </div>
+                
+                <div>
+                <h3 className="text-[28px] font-semibold text-white leading-tight mb-4">
+                  We maintain total ownership of our panel data
+
+                </h3>
+                <p className=" text-sm text-[20px] text-white leading-tight">
+                  We own our data supply chain from end-to-end ensuring our data is never compromised
+                </p>
+                </div>
+              </div>
+
+
+              {/* Step 2 */}
+              <div className=" text-center flex items-center justify-start flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="security.svg" alt="" />
+                </div>
+                
+                <div>
+                <h3 className="text-[28px] font-semibold text-white leading-tight mb-4">
+                  World Class Security and Privacy Practices
+                </h3>
+                <p className=" text-sm text-[20px] text-white leading-tight">
+                 DFA or GAID have never been used to supplement any Sensor Tower product with deterministic personal data
+                </p>
+                </div>
+              </div>
+
+
+              {/* Step 3 */}
+              <div className=" text-center flex items-center justify-start flex-col  relative items-center">
+                <div className="w-24 h-24   mb-4  relative z-10">
+                  {/* <Map className="w-6 h-6 text-white " /> */}
+                  <img src="security.svg" alt="" />
+                </div>
+                
+                <div>
+                <h3 className="text-[28px] font-semibold text-white leading-tight mb-4">
+                  We Only Collect De-identified Information
+
+                </h3>
+                <p className=" text-sm text-[20px] text-white leading-tight">
+                  Prior to leaving any panelist’s device, all information that could be used to personally identify your users is de-identified
+
+                </p>
+                </div>
+              </div>
+
+
+              
+
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section className="bg-gray-50 py-20 lg:py-32">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <div className="h-full rounded-2xl ">
+              {/* <ImageWithFallback
+                src="https://images.unsplash.com/photo-1765046255479-669cf07a0230?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHxkYXRhJTIwdmlzdWFsaXphdGlvbiUyMGFic3RyYWN0fGVufDF8fHx8MTc2OTU5ODI3OXww&ixlib=rb-4.1.0&q=80&w=1080"
+                alt="Security and privacy"
+                className="w-full h-full object-cover"
+              /> */}
+              <img className="w-full h-full object-cover"
+                src = "SOC_2.svg" />
+            </div>
+            <div className="h-full flex justify-center flex-col ">
+              <h2 className="text-[28px] font-semibold text-gray-900 mb-6">SOC 2 Compliant</h2>
+              <div className="text-[20px] space-y-4 text-gray-800 leading-tight mb-8">
+                <p>
+                  Sensor Tower has implemented continuous testing and monitoring of its comprehensive security and infrastructure controls, providing real-time protection of its systems and information. The company undergoes regular third-party audits to certify individual products against SOC 2 standards, which are based on the Auditing Standards Board of the American Institute of Certified Public Accountants (AICPA), and evaluate an organization’s information systems relevant to security, privacy, confidentiality, availability, and processing integrity.
+
+
+                </p>
+               
+              </div>
+            </div>
+
+            
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-essence py-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            Trust the data. Make better decisions.
+          <h2 className="text-5xl font-normal text-gray-900 mb-6">
+            Ready to get started?
           </h2>
-          <p className="text-xl text-gray-600 mb-10">
-            Start exploring market opportunities with verified, high-quality data
-          </p>
+          
           <div className="flex gap-4 justify-center flex-wrap">
             <Button
               onClick={handleBack}
               size="lg"
               className="fs-18 cursor-pointer bg-dark hover:bg-dark/90 text-white shadow-sm px-22 py-6 rounded-full font-semibold text-lg border-none"
             >
-              Get Started
-            </Button>
-            <Button
-              onClick={handleContact}
-              size="lg"
-              className="fs-18 cursor-pointer bg-dark hover:bg-dark/90 text-white shadow-sm px-22 py-6 rounded-full font-semibold text-lg border-none"
-            >
-              Questions? Contact Us
+              Sign Up For Free
             </Button>
           </div>
         </div>

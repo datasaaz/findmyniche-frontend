@@ -58,7 +58,7 @@ export function Navbar() {
   const navLinks = [
     { name: "How it works", id: "how-it-works", description: "Learn our 4-step analysis process" },
     { name: "Example insights", id: "example-insights", description: "See what a market report looks like" },
-    { name: "Pricing", id: "pricing", description: "Simple, transparent plans for everyone" },
+    { name: "Pricing", id: "pricing", description: "Simple, transparent plans " },
     // { name: "Contact", id: "contact", isPath: true, description: "Get in touch with our team" },
   ];
 
@@ -106,39 +106,45 @@ export function Navbar() {
                   >
                     {link.name}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="absolute left-1/2 top-full -translate-x-1/2 mt-2">
-                    <div className="w-64 p-4 bg-white shadow-xl rounded-xl border border-gray-100">
-                      <p className="text-xs text-gray-500 leading-relaxed font-normal">
-                        {link.description}
-                      </p>
+                  <NavigationMenuContent className="absolute left-1/2 top-full -translate-x-1/2 mt-2 overflow-visible">
+                    <div className="relative">
+                      <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-8 rotate-45 z-[-1]  border border-gray-300"></span>
+                      <div className="w-64 p-4 bg-white shadow-xl rounded-xl border border-gray-100">
+                        <p className="text-sm text-gray-900 text-center leading-relaxed font-medium">
+                          {link.description}
+                        </p>
+                      </div>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               ))}
 
               <NavigationMenuItem className="relative">
-                <NavigationMenuTrigger className=" cursor-pointer bg-transparent hover:bg-gray-100 text-gray-800 hover:text-black font-semibold text-[16px] px-4 py-2 h-auto rounded-md transition-colors data-[state=open]:bg-gray-50 border-none">
+                <NavigationMenuTrigger className=" cursor-pointer bg-transparent  hover:bg-gray-100 text-gray-800 hover:text-black font-semibold text-[16px] px-4 py-2 h-auto rounded-md transition-colors data-[state=open]:bg-gray-50 border-none">
                   Company
                 </NavigationMenuTrigger>
-                <NavigationMenuContent className="absolute left-1/2 top-full -translate-x-1/2 mt-2">
-                  <div className="w-72 p-2 bg-white shadow-xl rounded-xl border border-gray-100">
-                    {companyLinks.map((item) => (
-                      <div 
-                        key={item.name}
-                        onClick={() => {
-                          navigate(item.path);
-                        }}
-                        className="flex flex-col items-start p-3 gap-1 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors group/item"
-                      >
-                        <div className="flex items-center gap-2 w-full">
-                          <item.icon className="w-4 h-4 text-essence" />
-                          <span className="font-semibold text-dark group-hover/item:text-essence transition-colors">{item.name}</span>
+                <NavigationMenuContent className="absolute left-1/2 top-full  -translate-x-1/2 mt-2 overflow-visible">
+                  <div className="relative">
+                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-[-1] w-8 h-8 rotate-45 bg-red border border-gray-300"></span>
+                    <div className="w-72 p-2 bg-white shadow-xl rounded-xl border border-gray-100">
+                      {companyLinks.map((item) => (
+                        <div 
+                          key={item.name}
+                          onClick={() => {
+                            navigate(item.path);
+                          }}
+                          className="flex flex-col items-start p-3 gap-1 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors group/item"
+                        >
+                          <div className="flex items-center gap-2 w-full">
+                            <item.icon className="w-4 h-4 text-essence" />
+                            <span className="font-semibold text-dark group-hover/item:text-essence transition-colors">{item.name}</span>
+                          </div>
+                          <p className="text-xs text-gray-900 leading-relaxed pl-6">
+                            {item.description}
+                          </p>
                         </div>
-                        <p className="text-xs text-gray-500 leading-relaxed pl-6">
-                          {item.description}
-                        </p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
