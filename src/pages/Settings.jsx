@@ -275,7 +275,7 @@ export function Settings({ userPlan = "free", onBack, onManageBilling } = {}) {
                     <Separator />
 
                     <div className="flex items-center gap-3">
-                      <Button onClick={handleSaveProfile} className="bg-blue-600 hover:bg-blue-700">
+                      <Button onClick={handleSaveProfile} className="bg-essence hover:bg-cyan-300">
                         Save Changes
                       </Button>
                       {profileSaved && (
@@ -391,7 +391,7 @@ export function Settings({ userPlan = "free", onBack, onManageBilling } = {}) {
                     <Separator />
 
                     <div className="flex items-center gap-3">
-                      <Button onClick={handleSavePreferences} className="bg-blue-600 hover:bg-blue-700">
+                      <Button onClick={handleSavePreferences} className="bg-essence hover:bg-cyan-300">
                         Save Preferences
                       </Button>
                       {preferencesSaved && (
@@ -521,7 +521,7 @@ export function Settings({ userPlan = "free", onBack, onManageBilling } = {}) {
                         <ExternalLink className="w-4 h-4 ml-2" />
                       </Button>
                     ) : (
-                      <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleManageBilling}>
+                      <Button className="bg-essence hover:bg-cyan-300" onClick={handleManageBilling}>
                         Upgrade to Pro
                       </Button>
                     )}
@@ -637,7 +637,7 @@ export function Settings({ userPlan = "free", onBack, onManageBilling } = {}) {
             <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>
               Cancel
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">Update password</Button>
+            <Button className="bg-essence hover:bg-cyan-300">Update password</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

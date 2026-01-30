@@ -199,7 +199,7 @@ export function SignInSignUp({ onBack, onSuccess } = {}) {
               </div>
             )}
 
-            <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700" disabled={!isFormValid}>
+            <Button type="submit" className="w-full h-11 bg-essence hover:bg-cyan-300" disabled={!isFormValid}>
               {mode === "signin" ? "Sign in" : "Create account"}
             </Button>
           </form>

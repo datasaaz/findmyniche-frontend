@@ -159,7 +159,7 @@ export function BillingSubscription({ onBack, onUpgradeSuccess } = {}) {
 
           <Card className="p-8 border-2 border-blue-500 bg-gradient-to-br from-blue-50 to-white relative shadow-lg">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <Badge className="bg-blue-600 text-white border-blue-700 shadow-md">Most popular</Badge>
+              <Badge className="bg-essence text-white border-blue-700 shadow-md">Most popular</Badge>
             </div>
 
             <div className="mb-6">
@@ -192,7 +192,7 @@ export function BillingSubscription({ onBack, onUpgradeSuccess } = {}) {
 
             <Button
               onClick={() => setSelectedPlan("pro")}
-              className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-base font-semibold shadow-lg"
+              className="w-full bg-essence hover:bg-cyan-300 h-12 text-base font-semibold shadow-lg"
             >
               Upgrade & unlock full report
               <ChevronRight className="w-5 h-5 ml-2" />
@@ -418,7 +418,7 @@ export function BillingSubscription({ onBack, onUpgradeSuccess } = {}) {
               </div>
             </Card>
 
-            <Button onClick={handleUpgrade} className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-base font-semibold shadow-lg">
+            <Button onClick={handleUpgrade} className="w-full h-12 bg-essence hover:bg-cyan-300 text-base font-semibold shadow-lg">
               Upgrade now
               <ChevronRight className="w-5 h-5 ml-2" />
             </Button>

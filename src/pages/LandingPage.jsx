@@ -58,7 +58,9 @@ export function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="pt-[25px] pb-20 px-6 bg-gradient-to-b from-gray-50 to-white">
+      <section   className={`bg-gradient-to-b from-gray-50 to-white px-6 pb-20 ${
+    isLoading ? "pt-[85px]" : "pt-[25px]"
+  }`} > 
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Side - Content */}

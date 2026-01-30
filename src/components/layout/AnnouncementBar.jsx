@@ -14,10 +14,10 @@ export function AnnouncementBar() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && location.pathname === "/") {
+    if (!isLoading ) {
       setVisible(true);
     }
-  }, [isLoading, location.pathname]);
+  }, [isLoading]);
 
   // Only visible on the first Landing page (root path)
   // if (location.pathname !== "/") {

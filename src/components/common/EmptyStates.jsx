@@ -94,7 +94,7 @@ export function EmptyReportsList({ onCreateReport }) {
 
       <Button
         onClick={onCreateReport}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+        className="bg-essence hover:bg-cyan-300 text-white font-semibold"
       >
         <FileText className="w-4 h-4 mr-2" />
         New report
@@ -293,7 +293,7 @@ export function EmptyExportState({ onExportReport }) {
 
       <Button
         onClick={onExportReport}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+        className="bg-essence hover:bg-cyan-300 text-white font-semibold"
       >
         <Download className="w-4 h-4 mr-2" />
         Export report
@@ -324,7 +324,7 @@ export function GenericEmptyState({
           {primaryAction && (
             <Button
               onClick={primaryAction.onClick}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+              className="bg-essence hover:bg-cyan-300 text-white font-semibold"
             >
               {primaryAction.label}
             </Button>

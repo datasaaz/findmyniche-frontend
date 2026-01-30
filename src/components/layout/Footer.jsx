@@ -1,10 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Target } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function Footer() {
+  const navigate = useNavigate();
+  const handleLogoClick = () => {
+    if (window?.scrollTo) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    navigate('/');
+  };
   const footerLinks = [
     { name: "About", path: "/about" },
+    { name: "Our Data", path: "/data" },
     { name: "Careers", path: "/careers" },
     { name: "Support", path: "/support" },
     { name: "Status", path: "/status" },
@@ -19,8 +28,8 @@ export function Footer() {
     <footer className="bg-[#1a1a1a] text-white py-10 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
         {/* Logo (Left) */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-essence rounded-lg flex items-center justify-center">
+        <div onClick={handleLogoClick} className=" cursor-pointer flex items-center gap-2">
+          <div  className="w-8 h-8 bg-essence rounded-lg flex items-center justify-center cursor-pointer">
             <Target className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-semibold">findmyniche</span>

@@ -147,7 +147,7 @@ export function Dashboard() {
           </div>
           <div className="text-sm text-gray-600 mb-4">Current plan</div>
           {userPlan === "free" ? (
-            <Button onClick={handleUpgrade} size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleUpgrade} size="sm" className="w-full bg-essence hover:bg-cyan-300">
               Upgrade to Pro
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -364,7 +364,7 @@ export function Dashboard() {
 
           <div className="mt-6 pt-6 border-t border-gray-200">
             {userPlan === "free" ? (
-              <Button onClick={handleUpgrade} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={handleUpgrade} className="bg-essence hover:bg-cyan-300">
                 <Sparkles className="w-5 h-5 mr-2" />
                 Upgrade to Pro
               </Button>

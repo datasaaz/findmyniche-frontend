@@ -115,7 +115,7 @@ export function BillingCheckout({ onBack, onSuccess, userEmail = "", monthlyPric
             <ChevronRight className="w-5 h-5 text-gray-400" />
 
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-essence rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-bold">2</span>
               </div>
               <span className="text-sm font-bold text-blue-600">Payment</span>

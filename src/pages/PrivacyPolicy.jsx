@@ -278,7 +278,7 @@ export function PrivacyPolicy({ onBack, onContact } = {}) {
           <h2 className="text-3xl font-semibold text-gray-900 mb-4">Security</h2>
           <Card className="p-6 bg-gray-50 border border-gray-200">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-essence rounded-lg flex items-center justify-center flex-shrink-0">
                 <Lock className="w-6 h-6 text-white" />
               </div>
               <p className="text-gray-800 leading-relaxed mt-2">
