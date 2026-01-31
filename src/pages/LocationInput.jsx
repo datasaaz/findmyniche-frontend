@@ -4,9 +4,9 @@ import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
-import { Target, ArrowLeft, MapPin, Search, Check, TrendingUp, Users, Star, AlertTriangle, ChevronRight } from "lucide-react";
+import { Target, ArrowLeft, MapPin, Search, Check, TrendingUp, Users, Star, AlertTriangle, ChevronRight, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { getLocation, getRelevantCategories } from "../utils/api";
+import { getLocation, getRelevantCategories, getCategoriesSuggestion ,getNiches } from "../utils/api";
 
 export function LocationCategoryInput() {
   const navigate = useNavigate();
@@ -34,8 +34,32 @@ export function LocationCategoryInput() {
   });
 
 
-  const categoryOptions = relevantCategoriesData?.categories || [];
-  const refinements = relevantCategoriesData?.category_niche || [];
+  const { data: categoriesSuggestionData, isLoading: isCategoriesSuggestionLoading } = useQuery({
+    queryKey: ["categories-suggestion", selectedCategory],
+    queryFn: () => getCategoriesSuggestion(selectedCategory),
+    enabled: !!selectedCategory,
+  });
+
+  
+  const { data: nichesData, isLoading: isNichesLoading } = useQuery({
+    queryKey: ["niches", selectedCategory],
+    queryFn: () => getNiches(selectedCategory),
+    enabled: !!selectedCategory,
+  });
+
+
+
+  const searchCategories = relevantCategoriesData?.results ?? [];
+
+  const suggestionCategories =categoriesSuggestionData?.suggestions ??[];
+
+
+  const categoryOptions = selectedCategory && !isCategoriesSuggestionLoading
+   ? suggestionCategories
+   : searchCategories;
+
+
+  const refinements = nichesData?.niches || [];
 
 
 
@@ -78,8 +102,8 @@ export function LocationCategoryInput() {
   };
 
   const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-    setCategoryInput(category);
+    setSelectedCategory(category?.name || category);
+    setCategoryInput(category?.name || category);
   };
 
   const toggleRefinement = (refinement) => {
@@ -106,11 +130,11 @@ export function LocationCategoryInput() {
 
   const isComplete = selectedLocation && selectedCategory;
 
-  const filteredCategories = categoryInput.trim() === ""
-    ? categoryOptions
-    : categoryOptions.filter(cat => 
-        cat.toLowerCase().includes(categoryInput.toLowerCase())
-      );
+  // const filteredCategories = categoryInput.trim() === ""
+  //   ? categoryOptions
+  //   : categoryOptions.filter(cat => 
+  //       cat.toLowerCase().includes(categoryInput.toLowerCase())
+  //     );
 
   const filteredLocations = locationInput.trim() === ""
     ? []
@@ -235,40 +259,65 @@ export function LocationCategoryInput() {
                 </div>
 
                 <div className="mb-6">
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <Input
-                      type="text"
-                      placeholder="Start typing a category (e.g. Restaurant, Gym, Coffee Shop)"
-                      value={categoryInput}
-                      onChange={(e) => setCategoryInput(e.target.value)}
-                      disabled={!selectedLocation}
-                      className="pl-12 h-14 text-base border-2"
-                    />
-                  </div>
-                </div>
+                      <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Input
+                          type="text"
+                          placeholder="Start typing a category (e.g. Restaurant, Gym, Coffee Shop)"
+                          value={categoryInput}
+                          onChange={(e) => {
+                            setCategoryInput(e.target.value);
+                            if (e.target.value === "") setSelectedCategory("");
+                          }}
+                          disabled={!selectedLocation}
+                          className="pl-12 pr-12 h-14 text-base border-2"
+                        />
+                        {(categoryInput || selectedCategory) && (
+                          <button
+                            onClick={() => {
+                              setCategoryInput("");
+                              setSelectedCategory("");
+                            }}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                            title="Clear selection"
+                          >
+                            <X className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
 
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-3">
                     Suggested categories
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {filteredCategories.slice(0, 8).map((category) => (
+                    {categoryOptions.map((category) => {
+
+
+
+                      return(
                       <button
                         key={category}
                         onClick={() => handleCategorySelect(category)}
                         disabled={!selectedLocation}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                          selectedCategory === category
+                          selectedCategory === category?.name ||
+                            selectedCategory === category
                             ? 'bg-essence text-white shadow-md'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
                         }`}
                       >
-                        {category}
+                        {category?.name || category}
+                        {/* <p>dd</p> */}
                       </button>
-                    ))}
+                      )
+                    })}
                   </div>
                 </div>
+
+
+
               </Card>
             </div>
 
@@ -287,32 +336,46 @@ export function LocationCategoryInput() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {refinements.map((refinement, index) => {
-                    const isSelected = selectedRefinements.includes(refinement);
-                    const isDisabled = !isSelected && selectedRefinements.length >= 2;
-                    
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => toggleRefinement(refinement)}
-                        disabled={!selectedCategory || isDisabled}
-                        className={`p-4 rounded-lg text-sm font-medium transition-all border-2 ${
-                          isSelected
-                            ? 'bg-green-50 border-green-500 text-green-800'
-                            : isDisabled
-                            ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed'
-                            : 'bg-white border-gray-200 text-gray-700 hover:border-green-300 hover:bg-green-50/50'
-                        }`}
-                      >
-                        {isSelected && (
-                          <Check className="w-4 h-4 text-green-600 mb-1" />
-                        )}
-                        {refinement.name}
-                      </button>
-                    );
-                  })}
-                </div>
+            {refinements.map((refinement, index) => {
+              const isSelected = selectedRefinements.includes(refinement);
+              const isDisabled = !isSelected && selectedRefinements.length >= 2;
+              
+              return (
+                <button
+                  key={index}
+                  onClick={() => toggleRefinement(refinement)}
+                  disabled={!selectedCategory || isDisabled}
+                  className={`relative p-4 rounded-xl text-sm font-medium transition-all border-2 h-20 flex items-center justify-center ${
+                    isSelected
+                      ? 'bg-green-50 border-green-500 text-green-800'
+                      : isDisabled
+                      ? 'bg-gray-50 border-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-green-300 hover:bg-green-50/50 shadow-sm'
+                  }`}
+                >
+        {isSelected && (
+          <Check className="absolute top-3 left-3 w-5 h-5 text-green-600" />
+        )}
+        <span className="text-center">{refinement}</span>
+      </button>
+    );
+  })}
+</div>
               </Card>
+            </div>
+
+           <div className="pt-4">
+              <Button
+                onClick={handleCreateReport}
+                disabled={!isComplete}
+                className="w-full h-14 bg-essence hover:bg-cyan-300 text-lg font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Create market report
+                <ChevronRight className="w-5 h-5 ml-2" />
+              </Button>
+              <p className="text-center text-sm text-gray-500 mt-3">
+                You'll get a free preview before signing up.
+              </p>
             </div>
           </div>
 
@@ -345,6 +408,8 @@ export function LocationCategoryInput() {
                     </div>
                   </div>
                 </div>
+
+                
               </Card>
             </div>
           </div>

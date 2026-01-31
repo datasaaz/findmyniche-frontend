@@ -21,7 +21,17 @@ export const getLocation = async (query) => {
 };
 
 export const getRelevantCategories = async (query) => {
-  const response = await api.get("relevant-categories", { params: { tag : query } });
+  const response = await api.get("categories/search", { params: { tag : query } });
+  return response.data;
+};
+
+export const getCategoriesSuggestion = async (query) => {
+  const response = await api.get("categories/suggestions", { params: { category : query } });
+  return response.data;
+};
+
+export const getNiches = async (query) => {
+  const response = await api.get("niches", { params: { category : query } });
   return response.data;
 };
 
