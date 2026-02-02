@@ -24,8 +24,8 @@ export function LandingPage() {
   const pricingPlans = landingApiData?.pricingPlans ?? [];
 
 
-  useEffect(() => {
-    // Scroll behavior handled by Navbar for home page
+useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const scrollToSection = (id) => {
@@ -40,20 +40,6 @@ export function LandingPage() {
   const onContact = () => navigate("/contact");
 
 
-
-  const competitionBarStyles = [
-    { colorClass: "bg-green-400", hoverClass: "hover:bg-green-500" },
-    { colorClass: "bg-green-300", hoverClass: "hover:bg-green-400" },
-    { colorClass: "bg-amber-400", hoverClass: "hover:bg-amber-500" },
-    { colorClass: "bg-red-400", hoverClass: "hover:bg-red-500" },
-    { colorClass: "bg-amber-300", hoverClass: "hover:bg-amber-400" },
-    { colorClass: "bg-green-300", hoverClass: "hover:bg-green-400" }
-  ];
-  const competitionLegendStyles = [
-    { colorClass: "bg-green-400" },
-    { colorClass: "bg-amber-400" },
-    { colorClass: "bg-red-400" }
-  ];
 
   return (
     <div className="min-h-screen bg-white">
