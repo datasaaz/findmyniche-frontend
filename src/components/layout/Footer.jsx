@@ -1,15 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Target } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 export function Footer() {
-  const navigate = useNavigate();
   const handleLogoClick = () => {
     if (window?.scrollTo) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    navigate('/');
   };
   const footerLinks = [
     { name: "About", path: "/about" },

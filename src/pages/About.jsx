@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -5,6 +6,12 @@ import { Target, ArrowLeft } from "lucide-react";
 
 export function About({ onBack, onContact } = {}) {
   const navigate = useNavigate();
+
+
+  // scroll to top on render
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const handleBack = () => {
     if (onBack) {
