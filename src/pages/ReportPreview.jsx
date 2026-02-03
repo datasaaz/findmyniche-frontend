@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate ,useSearchParams  } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
@@ -31,17 +31,27 @@ export function ReportPreview({
   onCreateAccount,
 } = {}) {
   const navigate = useNavigate();
-  const { state } = useLocation();
   const [showComparison, setShowComparison] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
 
-  console.log(state , "statee ")
+  const [searchParams] = useSearchParams();
 
-  const resolvedLocation = location || state?.location || "Cambridge, UK";
-  const resolvedCategory = category || state?.category || "Coffee Shop";
-  const resolvedRefinements = refinements || state?.refinements || [];
+  const {state} = useLocation();
+
+
+  const resolvedLocation = location || searchParams.get("location") || "Cambridge, UK";
+  const resolvedCategory = category || searchParams.get("category") || "Coffee Shop";
+  const resolvedRefinements = refinements || searchParams.get("refinements") || [];
   const resolvedAuthenticated = state?.isAuthenticated ?? isAuthenticated;
+
+
+
+  const payload1 = { 
+    location: searchParams.get("location"),
+    category: searchParams.get("category"),
+    refinements: JSON.parse(searchParams.get("refinements") ?? [])
+  }
 
 
   const {data : previewData} = useQuery({
