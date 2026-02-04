@@ -389,77 +389,77 @@ useEffect(() => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-essence/10 rounded-lg flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-essence" />
+          <div className=" text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="pb-4 flex flex-col bg-white border border-gray-200 hover:shadow-lg transition-all overflow-hidden">
+              <div className="w-full h-full bg-essence/10 flex items-center justify-center">
+                <img src="Images/Landing/wyg1.jpeg" alt="Competitive landscape" className="h-full w-full object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Competitive landscape
-              </h3>
-              <p className="text-gray-600 text-sm">
-                See how many competitors exist and where they're concentrated
-              </p>
+              <div className="px-6 text-center space-y-2">
+                <h3 className="text-[24px] font-semibold text-gray-900">Competitive landscape</h3>
+                <p className=" text-[18px] text-gray-600 text-sm leading-relaxed">
+                  See how many competitors exist and where they're concentrated
+                </p>
+                </div>
+              </Card>
+
+            <Card className="pb-4 flex flex-col bg-white border border-gray-200 hover:shadow-lg transition-all overflow-hidden">
+              <div className="w-full h-full bg-essence/10 flex items-center justify-center">
+                <img src="Images/Landing/wyg2.jpeg" alt="Market gap detection" className="h-full w-full object-cover" />
+              </div>
+              <div className="px-6 text-center space-y-2">
+                <h3 className="text-[24px] font-semibold text-gray-900">Market gap detection</h3>
+                <p className=" text-[18px] text-gray-600 text-sm leading-relaxed">
+                  Identify underserved areas and untapped opportunities
+                </p>
+              </div>
             </Card>
 
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Target className="w-6 h-6 text-green-600" />
+            <Card className="pb-4 flex flex-col bg-white border border-gray-200 hover:shadow-lg transition-all overflow-hidden">
+              <div className="w-full h-full bg-essence/10 flex items-center justify-center">
+                <img src="Images/Landing/wyg3.jpeg" alt="Review-based customer signals" className="h-full w-full object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Market gap detection
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Identify underserved areas and untapped opportunities
-              </p>
+              <div className="px-6 text-center space-y-2">
+                <h3 className="text-[24px] font-semibold text-gray-900">Review-based customer signals</h3>
+                <p className=" text-[18px] text-gray-600 text-sm leading-relaxed">
+                  Understand demand and sentiment from real customer feedback
+                </p>
+              </div>
             </Card>
 
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <Star className="w-6 h-6 text-purple-600" />
+            <Card className="pb-4 flex flex-col bg-white border border-gray-200 hover:shadow-lg transition-all overflow-hidden">
+              <div className="w-full h-full bg-essence/10 flex items-center justify-center">
+                <img src="Images/Landing/wyg4.jpeg" alt="Risk and saturation warnings" className="h-full w-full object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Review-based customer signals
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Understand demand and sentiment from real customer feedback
-              </p>
+              <div className="px-6 text-center space-y-2">
+                <h3 className="text-[24px] font-semibold text-gray-900">Risk & saturation warnings</h3>
+                <p className=" text-[18px] text-gray-600 text-sm leading-relaxed">
+                  Get alerts about oversaturated markets before you invest
+                </p>
+              </div>
             </Card>
 
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
+            <Card className="pb-4 flex flex-col bg-white border border-gray-200 hover:shadow-lg transition-all overflow-hidden">
+              <div className="w-full h-full bg-essence/10 flex items-center justify-center">
+                <img src="Images/Landing/wyg5.jpeg" alt="Location-specific insights" className="h-full w-full object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Risk & saturation warnings
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Get alerts about oversaturated markets before you invest
-              </p>
+              <div className="px-6 text-center space-y-2">
+                <h3 className="text-[24px] font-semibold text-gray-900">Location-specific insights</h3>
+                <p className=" text-[18px] text-gray-600 text-sm leading-relaxed">
+                  Hyper-local data tailored to your exact target area
+                </p>
+              </div>
             </Card>
 
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                <MapPin className="w-6 h-6 text-essence" />
+            <Card className="pb-4 flex flex-col bg-white border border-gray-200 hover:shadow-lg transition-all overflow-hidden">
+              <div className="w-full h-full bg-essence/10 flex items-center justify-center">
+                <img src="Images/Landing/wyg6.jpeg" alt="Data-backed confidence score" className="h-full w-full object-cover" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Location-specific insights
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Hyper-local data tailored to your exact target area
-              </p>
-            </Card>
-
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
-                <Zap className="w-6 h-6 text-teal-600" />
+              <div className="px-6 text-center space-y-2">
+                <h3 className="text-[24px] font-semibold text-gray-900">Data-backed confidence score</h3>
+                <p className=" text-[18px] text-gray-600 text-sm leading-relaxed">
+                  Clear opportunity ratings based on multiple signals
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Data-backed confidence score
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Clear opportunity ratings based on multiple signals
-              </p>
             </Card>
           </div>
         </div>

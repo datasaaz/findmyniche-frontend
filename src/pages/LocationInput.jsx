@@ -118,13 +118,12 @@ export function LocationCategoryInput() {
 
   const handleCreateReport = () => {
     if (selectedLocation && selectedCategory) {
-      navigate("/preview", {
-        state: {
-          location: selectedLocation,
-          category: selectedCategory,
-          refinements: selectedRefinements,
-        },
+      const params = new URLSearchParams({
+        location: selectedLocation,
+        category: selectedCategory,
+        refinements: JSON.stringify(selectedRefinements ?? []),
       });
+      navigate("/preview?" + params.toString());
     }
   };
 
