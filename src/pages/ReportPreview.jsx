@@ -64,9 +64,11 @@ export function ReportPreview({
 
 
   const {data : previewData} = useQuery({
-    queryKey: ["report-preview", payload1],
+    queryKey: ["report-preview"],
     queryFn: () => CreatePreviewApi(payload1),
-    enabled: !!resolvedLocation && !!resolvedCategory && !!resolvedRefinements.length
+    enabled: !!payload1.location && !!payload1.category,
+    cacheTime: 100000,
+    staleTime: 100000,
   });
 
 
