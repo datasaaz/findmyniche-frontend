@@ -16,7 +16,7 @@ export const getLanding = async () => {
 
 
 export const getLocation = async (query) => {
-  const response = await api.get("place-lookup", { params: { query : query } });
+  const response = await api.get("locations/suggest", { params: { q : query } });
   return response.data;
 };
 
@@ -30,8 +30,10 @@ export const getCategoriesSuggestion = async (query) => {
   return response.data;
 };
 
-export const getNiches = async (query) => {
-  const response = await api.get("niches", { params: { category : query } });
+export const getNiches = async (category, item) => {
+  const params = { category };
+  if (item) params.item = item;
+  const response = await api.get("niches", { params });
   return response.data;
 };
 
