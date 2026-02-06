@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
-import { Target, ArrowLeft, MapPin, Search, Check, TrendingUp, Users, Star, AlertTriangle, ChevronRight, X } from "lucide-react";
+import { Target, ArrowLeft, MapPin, Search, Check, TrendingUp, Users, Star, AlertTriangle, ChevronRight, X, Loader } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getLocation, getRelevantCategories, getCategoriesSuggestion ,getNiches } from "../utils/api";
 
@@ -16,6 +16,7 @@ export function LocationCategoryInput() {
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [categoryInput, setCategoryInput] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [selectedRefinements, setSelectedRefinements] = useState([]);
 
  
@@ -42,38 +43,27 @@ export function LocationCategoryInput() {
 
   
   const { data: nichesData, isLoading: isNichesLoading } = useQuery({
-    queryKey: ["niches", selectedCategory],
-    queryFn: () => getNiches(selectedCategory),
-    enabled: !!selectedCategory,
+    queryKey: ["niches", selectedCategory, selectedSubCategory],
+    queryFn: () => getNiches(selectedCategory, selectedSubCategory),
+    enabled: !!selectedCategory && !!selectedSubCategory,
   });
 
 
 
   const searchCategories = relevantCategoriesData?.results ?? [];
 
-  const suggestionCategories =categoriesSuggestionData?.suggestions ??[];
-
-
-  const categoryOptions = selectedCategory && !isCategoriesSuggestionLoading
-   ? suggestionCategories
-   : searchCategories;
+  const subCategories = categoriesSuggestionData?.sub_categories ?? [];
 
 
   const refinements = nichesData?.niches || [];
 
 
 
-  const locationSuggestions = Array.isArray(locationData)
-    ? locationData
-    : Array.isArray(locationData?.locations)
-      ? locationData.locations
-      : Array.isArray(locationData?.data)
-        ? locationData.data
-        : Array.isArray(locationData?.results)
-          ? locationData.results
-          : Array.isArray(locationData?.predictions)
-            ? locationData.predictions
-            : [];
+  const locationSuggestions = Array.isArray(locationData?.items)
+    ? locationData.items
+    : Array.isArray(locationData)
+      ? locationData
+      : [];
 
 
 
@@ -87,6 +77,7 @@ export function LocationCategoryInput() {
 
   useEffect(() => {
     if (categoryInput) {
+      setSelectedSubCategory("");
       setSelectedRefinements([]);
     }
   }, [categoryInput]);
@@ -95,15 +86,36 @@ export function LocationCategoryInput() {
 
 
   const handleLocationSelect = (location) => {
-    const fullLocation = `${location.name}, ${location.region}, ${location.country}`;
+    const name = location?.label ?? location?.name ?? "";
+    const city = location?.city ?? location?.region ?? "";
+    const country = location?.country_code ?? location?.country ?? "";
+    const fullLocation = [name, city, country].filter(Boolean).join(", ");
     setSelectedLocation(fullLocation);
     setLocationInput(fullLocation);
     setShowLocationDropdown(false);
   };
 
+  const [expandedCategory, setExpandedCategory] = useState("");
+
   const handleCategorySelect = (category) => {
-    setSelectedCategory(category?.name || category);
-    setCategoryInput(category?.name || category);
+    setExpandedCategory(category);
+    setSelectedCategory(category);
+    setCategoryInput(category);
+    setSelectedSubCategory("");
+    setSelectedRefinements([]);
+  };
+
+  const handleSubCategorySelect = (subCategory) => {
+    setSelectedSubCategory(subCategory?.name || subCategory);
+    setSelectedRefinements([]);
+  };
+
+  const handleCategoryExpand = (category) => {
+    setExpandedCategory(category);
+    setSelectedCategory(category);
+    setCategoryInput(category);
+    setSelectedSubCategory("");
+    setSelectedRefinements([]);
   };
 
   const toggleRefinement = (refinement) => {
@@ -118,9 +130,18 @@ export function LocationCategoryInput() {
 
   const handleCreateReport = () => {
     if (selectedLocation && selectedCategory) {
+       
+      const refinements = selectedRefinements.map((refinement) => ({
+        name: refinement.name
+      }))
+
+      console.log(refinements , " refinements ")
+
+
       const params = new URLSearchParams({
         location: selectedLocation,
         category: selectedCategory,
+        subCategory: selectedSubCategory,
         refinements: JSON.stringify(selectedRefinements ?? []),
       });
       navigate("/preview?" + params.toString());
@@ -128,23 +149,6 @@ export function LocationCategoryInput() {
   };
 
   const isComplete = selectedLocation && selectedCategory;
-
-  // const filteredCategories = categoryInput.trim() === ""
-  //   ? categoryOptions
-  //   : categoryOptions.filter(cat => 
-  //       cat.toLowerCase().includes(categoryInput.toLowerCase())
-  //     );
-
-  const filteredLocations = locationInput.trim() === ""
-    ? []
-    : locationSuggestions.filter((location) => {
-        const name = location?.name ?? location?.description ?? "";
-        const region = location?.region ?? location?.secondary_text ?? "";
-        return (
-          name.toLowerCase().includes(locationInput.toLowerCase()) ||
-          region.toLowerCase().includes(locationInput.toLowerCase())
-        );
-      });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -215,12 +219,15 @@ export function LocationCategoryInput() {
                   <Card className="absolute top-full mt-2 w-full border border-gray-200 shadow-lg z-10 bg-white">
                     <div className="py-2">
                       {isLocationLoading && (
-                        <div className="px-4 py-3 text-sm text-gray-500">Loading locations...</div>
+                        <div className="px-4 py-3 flex items-center gap-2 text-sm text-gray-500">
+                          <Loader className="w-4 h-4 animate-spin" />
+                          Loading locations...
+                        </div>
                       )}
-                      {!isLocationLoading && filteredLocations.length === 0 && (
+                      {!isLocationLoading && locationSuggestions.length === 0 && (
                         <div className="px-4 py-3 text-sm text-gray-500">No locations found.</div>
                       )}
-                      {!isLocationLoading && filteredLocations.map((location, index) => (
+                      {!isLocationLoading && locationSuggestions.map((location, index) => (
                         <button
                           key={index}
                           onClick={() => handleLocationSelect(location)}
@@ -230,9 +237,11 @@ export function LocationCategoryInput() {
                             <MapPin className="w-4 h-4 text-essence" />
                           </div>
                           <div>
-                            <div className="font-medium text-gray-900">{location.name ?? location.description}</div>
+                            <div className="font-medium text-gray-900">{location.label ?? location.name ?? location.description}</div>
                             <div className="text-sm text-gray-500">
-                              {location.region ?? location.secondary_text}{location.country ? `, ${location.country}` : ""}
+                              {[location.city ?? location.region ?? location.secondary_text, location.country_code ?? location.country]
+                                .filter(Boolean)
+                                .join(", ")}
                             </div>
                           </div>
                         </button>
@@ -288,39 +297,94 @@ export function LocationCategoryInput() {
 
                 <div>
                   <p className="text-sm font-medium text-gray-700 mb-3">
-                    Suggested categories
+                    {selectedCategory ? "Categories" : "Search categories"}
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {categoryOptions.map((category) => {
-
-
-
-                      return(
-                      <button
-                        key={category}
-                        onClick={() => handleCategorySelect(category)}
-                        disabled={!selectedLocation}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                          selectedCategory === category?.name ||
-                            selectedCategory === category
-                            ? 'bg-essence text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
-                        }`}
-                      >
-                        {category?.name || category}
-                        {/* <p>dd</p> */}
-                      </button>
-                      )
-                    })}
-                  </div>
+                  {isRelevantCategoriesLoading ? (
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <Loader className="w-5 h-5 animate-spin" />
+                      <span className="text-sm">Loading categories...</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {searchCategories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => handleCategoryExpand(category)}
+                          disabled={!selectedLocation}
+                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                            selectedCategory === category || expandedCategory === category
+                              ? 'bg-essence text-white shadow-md'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
+                          }`}
+                        >
+                          {category}
+                          {(selectedCategory === category || expandedCategory === category) && (
+                            <span
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedCategory("");
+                                setExpandedCategory("");
+                                setCategoryInput("");
+                              }}
+                              className="hover:bg-white/20 rounded-full p-0.5"
+                            >
+                              <X className="w-3 h-3" />
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
+
+                {expandedCategory && (
+                  <div className="mt-6">
+                    <p className="text-sm font-medium text-gray-700 mb-3">
+                      Sub-categories for {expandedCategory}
+                    </p>
+                    {isCategoriesSuggestionLoading ? (
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <Loader className="w-5 h-5 animate-spin" />
+                        <span className="text-sm">Loading sub-categories...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {subCategories.map((subCategory) => (
+                          <button
+                            key={subCategory.name}
+                            onClick={() => handleSubCategorySelect(subCategory)}
+                            disabled={!selectedLocation}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                              selectedSubCategory === subCategory.name
+                                ? 'bg-purple-600 text-white shadow-md'
+                                : 'bg-purple-100 text-purple-700 hover:bg-purple-200 border border-purple-200'
+                            }`}
+                          >
+                            {subCategory.name}
+                            {selectedSubCategory === subCategory.name && (
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedSubCategory("");
+                                }}
+                                className="hover:bg-white/20 rounded-full p-0.5"
+                              >
+                                <X className="w-3 h-3" />
+                              </span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
 
 
               </Card>
             </div>
 
-            <div className={`transition-all duration-500 ${selectedCategory && refinements.length > 0 ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+            <div className={`transition-all duration-500 ${selectedSubCategory && refinements.length > 0 ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
               <Card className="p-8 bg-white border border-gray-200 shadow-sm">
                 <div className="mb-6">
                   <Badge className="mb-3 bg-green-100 text-green-700 border-green-200">
@@ -334,7 +398,13 @@ export function LocationCategoryInput() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {isNichesLoading ? (
+                  <div className="flex items-center gap-2 text-gray-500 py-8">
+                    <Loader className="w-5 h-5 animate-spin" />
+                    <span className="text-sm">Loading refinements...</span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {refinements.map((refinement, index) => {
               const isSelected = selectedRefinements.includes(refinement);
               const isDisabled = !isSelected && selectedRefinements.length >= 2;
@@ -352,14 +422,15 @@ export function LocationCategoryInput() {
                       : 'bg-white border-gray-200 text-gray-700 hover:border-green-300 hover:bg-green-50/50 shadow-sm'
                   }`}
                 >
-        {isSelected && (
-          <Check className="absolute top-3 left-3 w-5 h-5 text-green-600" />
-        )}
-        <span className="text-center">{refinement}</span>
-      </button>
-    );
-  })}
-</div>
+                      {isSelected && (
+                        <Check className="absolute top-3 left-3 w-5 h-5 text-green-600" />
+                      )}
+                      <span className="text-center">{refinement}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              )}
               </Card>
             </div>
 
