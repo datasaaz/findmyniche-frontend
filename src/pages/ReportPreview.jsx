@@ -47,10 +47,17 @@ export function ReportPreview({
 
 
 
+  const refinements22 = JSON.parse(searchParams.get("refinements")?? []);
+
+  const parsedRefinement = refinements22.map((refinement) => ({
+    name: refinement
+  }))
+  
+
   const payload1 = { 
     location: searchParams.get("location"),
     category: searchParams.get("category"),
-    refinements: JSON.parse(searchParams.get("refinements") ?? [])
+    refinements: parsedRefinement
   }
 
   console.log(payload1 ) ;
