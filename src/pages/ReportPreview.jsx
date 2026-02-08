@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { CreatePreviewApi } from "../utils/api";
+import { signInWithGoogle } from "../utils/auth";
+import Swal from "sweetalert2";
 
 export function ReportPreview({
   location,
@@ -57,6 +59,7 @@ export function ReportPreview({
   const payload1 = { 
     location: searchParams.get("location"),
     category: searchParams.get("category"),
+    subCategory: searchParams.get("subCategory") || '',
     refinements: parsedRefinement
   }
 
@@ -166,6 +169,27 @@ export function ReportPreview({
       return;
     }
     navigate("/signup", { state: { location: resolvedLocation, category: resolvedCategory } });
+  };
+
+
+  const handleGoogleLogin = async() => {
+    try {
+      const result = await signInWithGoogle();
+      
+      if (result) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "You have successfully logged in!",
+          timer: 2500,
+          timerProgressBar: true,
+        });
+
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Google login failed:", error);
+    }
   };
 
   return (
@@ -402,7 +426,7 @@ export function ReportPreview({
                     Create free account
                   </Button>
                   <Button
-                    onClick={handleUnlockClick}
+                    onClick={handleGoogleLogin}
                     variant="outline"
                     className="w-full h-12 border-2 text-base font-medium"
                   >

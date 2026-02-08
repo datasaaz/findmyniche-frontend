@@ -49,13 +49,13 @@ export default function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/settings" element={<Settings />} />
           <Route path="/about" element={<About />} />
           <Route path="/data" element={<OurData />} />
         </Route>
 
         {/* Dashboard/Protected Routes */}
         <Route element={<DashboardLayout />}>
+          <Route path="/settings" element={<Settings />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/reports" element={<ReportList />} />
           <Route path="/report/:id" element={<ReportDetail />} />

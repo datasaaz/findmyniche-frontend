@@ -144,7 +144,7 @@ export function Settings({ userPlan = "free", onBack, onManageBilling } = {}) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b border-gray-200">
+      {/* <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <button onClick={handleBack} className="flex items-center gap-2">
@@ -169,7 +169,7 @@ export function Settings({ userPlan = "free", onBack, onManageBilling } = {}) {
             </div>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex gap-8">
