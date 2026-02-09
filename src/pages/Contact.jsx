@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Target, ArrowLeft, Mail, Send, Clock, MapPin } from "lucide-react";
+import { submitContact } from "../utils/api";
 
 export function Contact({ onBack } = {}) {
   const navigate = useNavigate();
@@ -14,16 +16,36 @@ export function Contact({ onBack } = {}) {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
+  const contactMutation = useMutation({
+    mutationFn: submitContact,
+    onSuccess: () => {
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setName("");
+        setEmail("");
+        setReason("Support");
+        setMessage("");
+      }, 10000);
+    },
+    onError: (error) => {
+      console.error("Failed to submit contact form:", error);
+    }
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setName("");
-      setEmail("");
-      setReason("Support");
-      setMessage("");
-    }, 3000);
+    
+    const payload = {
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim(),
+      topic: "beta",
+      page_context: "contact",
+      timestamp: new Date().toISOString()
+    };
+
+    contactMutation.mutate(payload);
   };
 
   const handleBack = () => {
@@ -35,6 +57,7 @@ export function Contact({ onBack } = {}) {
   };
 
   const isFormValid = name.trim() !== "" && email.trim() !== "" && message.trim() !== "";
+  const isLoading = contactMutation.isPending;
 
   return (
     <div className="min-h-screen bg-white">
@@ -55,22 +78,22 @@ export function Contact({ onBack } = {}) {
         </div>
       </nav> */}
 
-      <div className="max-w-4xl mx-auto px-6 py-16">
+      <div className="max-w-4xl mx-auto px- py-16">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-semibold text-gray-900 mb-4">Contact Us</h1>
           <p className="text-xl text-gray-600">We're here to help</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className=" grid grid-cols-1 lg:grid-cols-3 gap-8 ">
           <div className="lg:col-span-1 space-y-6">
-            <Card className="p-6 border border-gray-200">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-5 h-5 text-blue-600" />
+            <Card className="  p-6 border border-gray-200">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-5 h-5 text-essence" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
-                  <a href="mailto:support@findmyniche.com" className="text-blue-600 hover:text-blue-700 mb-2 block">
+                  <a href="mailto:support@findmyniche.com" className="text-essence hover:text-cyan-300 mb-2 ">
                     support@findmyniche.com
                   </a>
                   <p className="text-sm text-gray-600">For support, billing, or general questions</p>
@@ -79,7 +102,7 @@ export function Contact({ onBack } = {}) {
             </Card>
 
             <Card className="p-6 bg-blue-50 border border-blue-200">
-              <div className="flex items-start gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-essence rounded-lg flex items-center justify-center flex-shrink-0">
                   <Clock className="w-5 h-5 text-white" />
                 </div>
@@ -187,11 +210,20 @@ export function Contact({ onBack } = {}) {
 
                     <Button
                       type="submit"
-                      className="w-full h-12 bg-essence hover:bg-cyan-300 text-lg"
-                      disabled={!isFormValid}
+                      disabled={!isFormValid || isLoading}
+                      className="w-full h-12 bg-essence hover:bg-cyan-300 text-base font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Send className="w-4 h-4 mr-2" />
-                      Send message
+                      {isLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Sending...
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center gap-2">
+                          <Send className="w-5 h-5" />
+                          Send Message
+                        </div>
+                      )}
                     </Button>
                   </form>
                 </>

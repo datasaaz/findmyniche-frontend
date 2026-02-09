@@ -3,7 +3,9 @@ import { createUserWithEmailAndPassword,GoogleAuthProvider,signInWithEmailAndPas
 import { auth} from "../firebase";
 
 
-
+// export const signInWithEmailAndPassword = async (email, password) => {
+//   return signInWithEmailAndPassword(auth, email, password);
+// };
 export const signInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   return signInWithPopup(auth, provider);
