@@ -70,5 +70,10 @@ export const CreatePreviewApi = async (payload) => {
   return response.data;
 };
 
+export const submitContact = async (payload) => {
+  const response = await api.post("/client/contact", payload);
+  return response.data;
+};
+
 export { API_BASE_URL };
 export default api;

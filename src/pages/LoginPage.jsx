@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useNavigate, Link } from "react-router-dom";
+import { signInWithEmail, signInWithGoogle } from "../utils/auth";
 import {
   TrendingUp,
   Eye,
@@ -24,27 +25,27 @@ export function LoginPage() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      if (
-        (email === "saadattakhan@gmail.com" && password === "12345678") ||
-        (email && password.length >= 8)
-      ) {
-        navigate("/dashboard");
-      } else {
-        setError("Invalid email or password. Please try again.");
-      }
+    try {
+      await signInWithEmail(email, password);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err?.message || "Invalid email or password. Please try again.");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setIsLoading(true);
-    setTimeout(() => {
+    setError("");
+    try {
+      await signInWithGoogle();
       navigate("/dashboard");
+    } catch (err) {
+      setError(err?.message || "Google login failed. Please try again.");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -66,16 +67,16 @@ export function LoginPage() {
       </nav> */}
 
       <main className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-[420px]">
+        <div className="w-full max-w-[480px]">
           <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-xl p-8">
             <div className="text-center mb-8">
               <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
-                  <BarChart3 className="w-7 h-7 text-blue-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
+                  <BarChart3 className="w-7 h-7 text-green-600" />
                 </div>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome back</h1>
-              <p className="text-sm text-gray-600">Log in to access your market reports</p>
+              <h1 className="text-[28px] font-bold text-gray-900">Welcome back</h1>
+              <p className="text-[18px] text-gray-600">Log in to access your market reports</p>
             </div>
 
             {error && (
@@ -130,18 +131,18 @@ export function LoginPage() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg"
+                className="w-full h-12 bg-essence hover:bg-cyan-300 text-white text-lg font-semibold shadow-lg"
               >
                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Log in"}
               </Button>
             </form>
 
-            <div className="relative my-6">
+            <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">or</span>
+                <span className="px-6 text-lg font-semibold bg-white text-gray-500">or</span>
               </div>
             </div>
 
@@ -150,16 +151,16 @@ export function LoginPage() {
               variant="outline"
               onClick={handleGoogleLogin}
               disabled={isLoading}
-              className="w-full h-12 border-2"
+              className="w-full h-12 border-2 text-lg font-semibold"
             >
               Continue with Google
             </Button>
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-gray-600 font-medium text-lg">
               New to findmyniche?{" "}
-              <Link to="/signup" className="font-semibold text-blue-600 hover:text-blue-700">
+              <Link to="/signup" className="font-semibold text-lg text-essence hover:text-cyan-600">
                 Create a free account
               </Link>
             </p>
