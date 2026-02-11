@@ -1,15 +1,12 @@
 import axios from "axios";
 import { auth } from "../firebase";
-import { signInAnonymously } from "firebase/auth";
+import { signInAnonymously, signOut } from "firebase/auth";
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://203.0.113.10/";
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
-  // headers:{
-  //   "X-Internal-API-Key": import.meta.env.VITE_API_KEY
-  // }
+  baseURL: API_BASE_URL,    
 });
 
 
@@ -30,6 +27,25 @@ api.interceptors.request.use(async (config) => {
   return Promise.reject(error);
 })
 
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const status = error?.response?.status;
+    const detail = error?.response?.data?.detail;
+    const isAuthError = status === 401 || status === 403 || detail === "Login required";
+
+    if (isAuthError) {
+      try {
+        await signOut(auth);
+      } catch (signOutError) {
+        console.error("Logout failed:", signOutError);
+      }
+      window.location.href = "/";
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 
 export const getLanding = async () => {
@@ -72,6 +88,13 @@ export const CreatePreviewApi = async (payload) => {
 
 export const submitContact = async (payload) => {
   const response = await api.post("/client/contact", payload);
+  return response.data;
+};
+
+
+// Private Apis 
+export const getDashboard = async () => {
+  const response = await api.get("/client/dashboard");
   return response.data;
 };
 
