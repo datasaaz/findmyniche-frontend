@@ -8,8 +8,28 @@ import { getLanding } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, LineChart as RechartsLineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
+
 export function LandingPage() {
   const navigate = useNavigate();
+  const [reports, setReports] = useState([
+  {
+    id: "RPT-001",
+    location: "San Francisco, CA",
+    category: "Coffee Shop",
+    createdDate: "2026-01-20",
+    status: "complete",
+    isFavorited: true,
+  },
+  {
+    id: "RPT-002",
+    location: "Austin, TX",
+    category: "Restaurant",
+    createdDate: "2026-01-18",
+    status: "complete",
+    isFavorited: false,
+  },
+]);
+
 
   const { data: landingApiData , isLoading, error } = useQuery({
     queryKey: ["landing"],

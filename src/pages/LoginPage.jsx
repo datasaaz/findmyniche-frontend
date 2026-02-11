@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useNavigate, Link } from "react-router-dom";
-import { signInWithEmail, signInWithGoogle } from "../utils/auth";
+import { signInWithEmail, signInWithGoogle, getFirebaseErrorMessage } from "../utils/auth";
 import {
   TrendingUp,
   Eye,
@@ -26,10 +26,15 @@ export function LoginPage() {
     setError("");
     setIsLoading(true);
     try {
-      await signInWithEmail(email, password);
+      const result = await signInWithEmail(email, password);
+      if (!result.user.emailVerified) {
+        navigate("/verify-email");
+        return;
+      }
       navigate("/dashboard");
     } catch (err) {
-      setError(err?.message || "Invalid email or password. Please try again.");
+      const errorCode = err?.code || "";
+      setError(getFirebaseErrorMessage(errorCode));
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +47,8 @@ export function LoginPage() {
       await signInWithGoogle();
       navigate("/dashboard");
     } catch (err) {
-      setError(err?.message || "Google login failed. Please try again.");
+      const errorCode = err?.code || "";
+      setError(getFirebaseErrorMessage(errorCode));
     } finally {
       setIsLoading(false);
     }

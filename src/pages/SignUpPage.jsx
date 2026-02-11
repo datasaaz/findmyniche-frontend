@@ -13,7 +13,7 @@ import {
   Sparkles,
   CheckCircle,
 } from "lucide-react";
-import { signUpWithEmail } from "../utils/auth";
+import { signUpWithEmail, signInWithGoogle, getFirebaseErrorMessage } from "../utils/auth";
 import Swal from "sweetalert2";
 
 
@@ -43,37 +43,30 @@ export function SignUpPage() {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      if (email && password) {
-
-        signUpWithEmail(email, password).then(() => {
-          navigate("/dashboard");
-        });
-        
-      } else {
-        setError("Please fill in all fields");
-      }
+    try {
+      await signUpWithEmail(email, password);
+      navigate("/verify-email");
+    } catch (err) {
+      const errorCode = err?.code || "";
+      setError(getFirebaseErrorMessage(errorCode));
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
-const handleGoogleLogin = async() => {
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError("");
     try {
       const result = await signInWithGoogle();
-      
       if (result) {
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Logged in successfully!",
-          timer: 2500,
-          timerProgressBar: true,
-        });
-
         navigate("/dashboard");
       }
-    } catch (error) {
-      console.error("Google login failed:", error);
+    } catch (err) {
+      const errorCode = err?.code || "";
+      setError(getFirebaseErrorMessage(errorCode));
+    } finally {
+      setIsLoading(false);
     }
   };
 

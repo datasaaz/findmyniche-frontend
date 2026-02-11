@@ -21,9 +21,37 @@ import {
   Trash2,
   Lock,
   Calendar,
+  Star,
 } from "lucide-react";
+import { getDashboard } from "../utils/api";
+import { useQuery } from "@tanstack/react-query";
 
-const mockReports = [];
+const mockReports = [
+  {
+    id: "RPT-001",
+    location: "San Francisco, CA",
+    category: "Coffee Shop",
+    createdDate: "2026-01-20",
+    status: "complete",
+    isFavorited: true,
+  },
+  {
+    id: "RPT-002",
+    location: "Austin, TX",
+    category: "Restaurant",
+    createdDate: "2026-01-18",
+    status: "complete",
+    isFavorited: false,
+  },
+  {
+    id: "RPT-003",
+    location: "Brooklyn, NY",
+    category: "Boutique",
+    createdDate: "2026-01-15",
+    status: "processing",
+    isFavorited: false,
+  },
+];
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -33,6 +61,16 @@ export function Dashboard() {
   const reportsUsed = userPlan === "free" ? 1 : reports.length;
   const reportsLimit = userPlan === "free" ? 1 : null;
   const lastReport = reports.length > 0 ? reports[0] : null;
+
+
+  const { data: dashboardData, isLoading: isLoadingDashboard } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: getDashboard,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+
+
+
 
   const handleCreateReport = () => {
     navigate("/input");
@@ -54,6 +92,20 @@ export function Dashboard() {
     if (confirm("Are you sure you want to delete this report?")) {
       setReports(reports.filter((report) => report.id !== reportId));
     }
+  };
+
+  const recentReports = [...reports]
+    .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
+    .slice(0, 3);
+
+  const handleToggleFavorite = (reportId) => {
+    setReports(
+      reports.map((report) =>
+        report.id === reportId
+          ? { ...report, isFavorited: !report.isFavorited }
+          : report,
+      ),
+    );
   };
 
   const getStatusIcon = (status) => {
@@ -214,7 +266,7 @@ export function Dashboard() {
         </div>
       </Card>
 
-      {reports.length > 0 ? (
+      {/* {reports.length > 0 ? (
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Your Reports</h2>
@@ -320,7 +372,115 @@ export function Dashboard() {
         </div>
       ) : (
         <EmptyDashboard onCreateReport={handleCreateReport} />
-      )}
+      )} */}
+
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Recent reports</h2>
+          <Button onClick={() => navigate("/reports")} variant="outline" className="border-gray-300">
+            View all
+          </Button>
+        </div>
+        <Card className="bg-white border-2 border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b-2 border-gray-200">
+                <tr>
+                  {/* <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4" />
+                    </div>
+                  </th> */}
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Report ID
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Location
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {recentReports.map((report) => (
+                  <tr key={report.id} className="hover:bg-gray-50 transition-colors">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => handleToggleFavorite(report.id)}
+                        className="hover:scale-110 transition-transform"
+                      >
+                        <Star
+                          className={`w-5 h-5 ${
+                            report.isFavorited
+                              ? "fill-amber-400 text-amber-400"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      </button>
+                    </td> */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-sm font-medium text-gray-900">
+                          {report.id}
+                        </span>
+                        {report.isLocked && userPlan === "free" && (
+                          <Lock className="w-4 h-4 text-gray-400" />
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <span className="text-sm text-gray-900">{report.location}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <span className="text-sm text-gray-900">{report.category}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Calendar className="w-4 h-4" />
+                        {new Date(report.createdDate).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {getStatusBadge(report.status)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <Button
+                        onClick={() => navigate(`/report/${report.id}`)}
+                        size="sm"
+                        variant="outline"
+                        className="border-gray-300"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         <Card className="md:col-span-2 p-8 bg-white border-2 border-gray-200">

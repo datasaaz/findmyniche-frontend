@@ -23,6 +23,7 @@ import { ReportList } from "./pages/ReportList";
 import { About } from "./pages/About";
 import { OurData } from "./pages/OurData";
 import { BillingPage } from "./pages/BillingPage";
+import { EmailVerificationPage } from "./pages/EmailVerificationPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function App() {
@@ -31,6 +32,9 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
+        {/* Standalone Routes */}
+        <Route path="/verify-email" element={<EmailVerificationPage />} />
+
         {/* Public Routes */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
