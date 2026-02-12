@@ -7,6 +7,7 @@ import { Badge } from "../components/ui/badge";
 import { Target, ArrowLeft, MapPin, Search, Check, TrendingUp, Users, Star, AlertTriangle, ChevronRight, X, Loader } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getLocation, getRelevantCategories, getCategoriesSuggestion ,getNiches } from "../utils/api";
+import { auth } from "../firebase";
 
 export function LocationCategoryInput() {
   const navigate = useNavigate();
@@ -130,6 +131,10 @@ export function LocationCategoryInput() {
 
   const handleCreateReport = () => {
     if (selectedLocation && selectedCategory) {
+      if (!auth.currentUser || auth.currentUser.isAnonymous) {
+        navigate("/login");
+        return;
+      }
        
       const refinements = selectedRefinements.map((refinement) => ({
         name: refinement.name
@@ -443,9 +448,9 @@ export function LocationCategoryInput() {
                 Create market report
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
-              <p className="text-center text-sm text-gray-500 mt-3">
+              {/* <p className="text-center text-sm text-gray-500 mt-3">
                 You'll get a free preview before signing up.
-              </p>
+              </p> */}
             </div>
           </div>
 

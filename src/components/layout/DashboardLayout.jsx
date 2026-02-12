@@ -20,65 +20,83 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { logOut } from "../../utils/auth";
+
+
 
 export function DashboardLayout() {
   const navigate = useNavigate();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const userPlan = "free";
 
-  const handleLogout = () => {
-    // Add logout logic here later
+  const handleLogout = async () => {
+    await logOut();
     navigate("/");
   };
 
   const getNavClass = ({ isActive }) =>
-    `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+    `w-full flex items-center gap-3 px-4 py-2.5 rounded-md text-sm transition-all duration-200 ${
       isActive
-        ? "bg-blue-100 text-blue-700 font-medium"
-        : "text-gray-700 hover:bg-gray-100"
+        ? "bg-white/10 text-white font-medium"
+        : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
     }`;
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <aside className="w-64 bg-white border-r border-gray-200 fixed h-full">
-        <div className="p-6">
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 text-white" />
+      <aside className="w-60 bg-[#1e2235] fixed h-full flex flex-col">
+        <div className="p-5">
+          <div className="flex items-center gap-2.5 mb-8 px-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <Target className="w-4 h-4 text-white" />
             </div>
-            <span className="text-xl font-semibold text-gray-900">findmyniche</span>
+            <span className="text-lg font-semibold text-white">findmyniche</span>
           </div>
 
-          <nav className="space-y-1">
-            <NavLink to="/dashboard" className={getNavClass}>
-              <LayoutDashboard className="w-5 h-5" />
-              Dashboard
-            </NavLink>
-            <NavLink to="/input" className={getNavClass}>
-              <PlusCircle className="w-5 h-5" />
-              Create new report
-            </NavLink>
-            <NavLink to="/reports" className={getNavClass}>
-              <FileText className="w-5 h-5" />
-              Reports
-            </NavLink>
-            <NavLink to="/billing" className={getNavClass}>
-              <CreditCard className="w-5 h-5" />
-              Billing
-            </NavLink>
-            <NavLink to="/settings" className={getNavClass}>
-              <Settings className="w-5 h-5" />
-              Settings
-            </NavLink>
-            <NavLink to="/contact" className={getNavClass}>
-              <HelpCircle className="w-5 h-5" />
-              Help / Support
-            </NavLink>
-          </nav>
+          <div className="mb-6">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 px-4 mb-2">Main</p>
+            <nav className="space-y-0.5">
+              <NavLink to="/dashboard" className={getNavClass}>
+                <LayoutDashboard className="w-[18px] h-[18px]" />
+                Dashboard
+              </NavLink>
+              <NavLink to="/input" className={getNavClass}>
+                <PlusCircle className="w-[18px] h-[18px]" />
+                Create new report
+              </NavLink>
+              <NavLink to="/reports" className={getNavClass}>
+                <FileText className="w-[18px] h-[18px]" />
+                Reports
+              </NavLink>
+            </nav>
+          </div>
+
+          <div className="mb-6">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 px-4 mb-2">Account</p>
+            <nav className="space-y-0.5">
+              <NavLink to="/billing" className={getNavClass}>
+                <CreditCard className="w-[18px] h-[18px]" />
+                Billing
+              </NavLink>
+              <NavLink to="/settings" className={getNavClass}>
+                <Settings className="w-[18px] h-[18px]" />
+                Settings
+              </NavLink>
+            </nav>
+          </div>
+
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 px-4 mb-2">Support</p>
+            <nav className="space-y-0.5">
+              <NavLink to="/contact" className={getNavClass}>
+                <HelpCircle className="w-[18px] h-[18px]" />
+                Help / Support
+              </NavLink>
+            </nav>
+          </div>
         </div>
       </aside>
 
-      <div className="flex-1 ml-64">
+      <div className="flex-1 ml-60">
         <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
           <div className="px-8 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
