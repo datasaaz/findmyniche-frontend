@@ -1,578 +1,482 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
-import { EmptyDashboard } from "../components/common/EmptyStates";
 import {
   FileText,
   CreditCard,
   PlusCircle,
   TrendingUp,
   Sparkles,
-  CheckCircle,
   Clock,
-  AlertCircle,
   ChevronRight,
   MapPin,
   Building2,
-  Download,
   Eye,
-  Trash2,
-  Lock,
   Calendar,
-  Star,
 } from "lucide-react";
 import { getDashboard } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-const mockReports = [
-  {
-    id: "RPT-001",
-    location: "San Francisco, CA",
-    category: "Coffee Shop",
-    createdDate: "2026-01-20",
-    status: "complete",
-    isFavorited: true,
-  },
-  {
-    id: "RPT-002",
-    location: "Austin, TX",
-    category: "Restaurant",
-    createdDate: "2026-01-18",
-    status: "complete",
-    isFavorited: false,
-  },
-  {
-    id: "RPT-003",
-    location: "Brooklyn, NY",
-    category: "Boutique",
-    createdDate: "2026-01-15",
-    status: "processing",
-    isFavorited: false,
-  },
-];
+const getStatusBadge = (status) => {
+  switch (status) {
+    case "complete":
+      return (
+        <Badge className="bg-green-100 text-green-800 border-green-400">
+          Complete
+        </Badge>
+      );
+    case "processing":
+      return (
+        <Badge className="bg-blue-100 text-blue-800 border-blue-400">
+          Processing
+        </Badge>
+      );
+    case "failed":
+      return (
+        <Badge className="bg-red-100 text-red-800 border-red-400">
+          Failed
+        </Badge>
+      );
+    default:
+      return null;
+  }
+};
+
+function UsageDonut({ used, allocated, isUnlimited }) {
+  const safeUsed = used || 0;
+  const safeAllocated = allocated || 0;
+  const percentage = isUnlimited
+    ? 100
+    : safeAllocated > 0
+      ? Math.round((safeUsed / safeAllocated) * 100)
+      : 0;
+  const remaining = 100 - percentage;
+
+  const data = [
+    { name: "Used", value: percentage || 1 },
+    { name: "Remaining", value: remaining || 0 },
+  ];
+  const COLORS = ["#4f46e5", "#e0e7ff"];
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative w-32 h-32">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={40}
+              outerRadius={58}
+              startAngle={90}
+              endAngle={-270}
+              dataKey="value"
+              stroke="none"
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-lg font-bold text-gray-900">
+            {isUnlimited ? "∞" : `${percentage}%`}
+          </span>
+        </div>
+      </div>
+      <div className="flex gap-6 mt-3">
+        <div className="text-center">
+          <div className="text-xs text-gray-500">Used</div>
+          <div className="text-sm font-bold text-gray-900">{safeUsed}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-xs text-gray-500">Allocated</div>
+          <div className="text-sm font-bold text-gray-900">
+            {isUnlimited ? "∞" : safeAllocated}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <Card className="p-4 bg-white border border-gray-200 rounded-sm animate-pulse">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-9 h-9 bg-gray-200 rounded-md" />
+        <div className="h-3 w-20 bg-gray-200 rounded" />
+      </div>
+      <div className="h-6 w-24 bg-gray-200 rounded mb-1" />
+      <div className="h-3 w-16 bg-gray-200 rounded" />
+    </Card>
+  );
+}
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const [reports, setReports] = useState(mockReports);
-  const userPlan = "free";
 
-  const reportsUsed = userPlan === "free" ? 1 : reports.length;
-  const reportsLimit = userPlan === "free" ? 1 : null;
-  const lastReport = reports.length > 0 ? reports[0] : null;
-
-
-  const { data: dashboardData, isLoading: isLoadingDashboard } = useQuery({
+  const { data: dashboardData, isLoading } = useQuery({
     queryKey: ["dashboard"],
     queryFn: getDashboard,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
+  const plan = dashboardData?.plan || "free";
+  const isPro = plan === "paid";
+  const totalReports = dashboardData?.total_reports || 0;
+  const pendingReports = dashboardData?.pending_reports || 0;
+  const usage = dashboardData?.usage || {};
+  const usedReports = usage.used || 0;
+  const allocatedReports = usage.allocated || 0;
+  const isUnlimited = usage.is_unlimited || false;
+  const billing = dashboardData?.billing || {};
+  const recentReports = dashboardData?.recent_reports || [];
+  const memberSince = dashboardData?.member_since
+    ? new Date(dashboardData.member_since).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "—";
+  const periodEnd = usage.period_end
+    ? new Date(usage.period_end).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "—";
 
+  const handleCreateReport = () => navigate("/input");
+  const handleUpgrade = () => navigate("/billing");
+  const handleManageBilling = () => navigate("/billing");
 
-
-  const handleCreateReport = () => {
-    navigate("/input");
-  };
-
-  const handleUpgrade = () => {
-    navigate("/billing");
-  };
-
-  const handleManageBilling = () => {
-    navigate("/billing");
-  };
-
-  const handleViewReport = (reportId) => {
-    navigate(`/report/${reportId}`);
-  };
-
-  const handleDeleteReport = (reportId) => {
-    if (confirm("Are you sure you want to delete this report?")) {
-      setReports(reports.filter((report) => report.id !== reportId));
-    }
-  };
-
-  const recentReports = [...reports]
-    .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
-    .slice(0, 3);
-
-  const handleToggleFavorite = (reportId) => {
-    setReports(
-      reports.map((report) =>
-        report.id === reportId
-          ? { ...report, isFavorited: !report.isFavorited }
-          : report,
-      ),
+  if (isLoading) {
+    return (
+      <div>
+        <div className="mb-6">
+          <div className="h-7 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+          <div className="h-4 w-72 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="grid md:grid-cols-4 gap-4 mb-6">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+        <div className="grid md:grid-cols-4 gap-4 mb-6">
+          <Card className="col-span-3 p-6 bg-white border border-gray-200 rounded-sm animate-pulse">
+            <div className="h-5 w-32 bg-gray-200 rounded mb-4" />
+            <div className="space-y-3">
+              <div className="h-4 w-full bg-gray-200 rounded" />
+              <div className="h-4 w-full bg-gray-200 rounded" />
+              <div className="h-4 w-3/4 bg-gray-200 rounded" />
+            </div>
+          </Card>
+          <Card className="col-span-1 p-6 bg-white border border-gray-200 rounded-sm animate-pulse">
+            <div className="h-32 w-32 mx-auto bg-gray-200 rounded-full" />
+          </Card>
+        </div>
+      </div>
     );
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "complete":
-        return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case "processing":
-        return <Clock className="w-4 h-4 text-blue-600" />;
-      case "failed":
-        return <AlertCircle className="w-4 h-4 text-red-600" />;
-      default:
-        return null;
-    }
-  };
-
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "complete":
-        return (
-          <Badge className="bg-green-100 text-green-800 border-green-400">
-            Complete
-          </Badge>
-        );
-      case "processing":
-        return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-400">
-            Processing
-          </Badge>
-        );
-      case "failed":
-        return (
-          <Badge className="bg-red-100 text-red-800 border-red-400">
-            Failed
-          </Badge>
-        );
-      default:
-        return null;
-    }
-  };
+  }
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back 👋</h1>
-        <p className="text-gray-600">Here's a snapshot of your market research activity.</p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back 👋</h1>
+        <p className="text-sm text-gray-500">Here's a snapshot of your market research activity.</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
-        <Card className="p-6 bg-white border-2 border-gray-200">
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <FileText className="w-6 h-6 text-blue-600" />
+      {/* ── Stat Cards ── */}
+      <div className="grid md:grid-cols-4 gap-4 mb-6">
+        {/* Total Reports */}
+        <Card className="p-6 bg-white border border-gray-200 rounded-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 items-center">
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                <FileText className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold text-gray-500 mb-1">Total Reports</p>
+                <div className="text-2xl font-bold text-gray-900 leading-none">{totalReports}</div>
+                <p className="text-[14px] text-gray-400 mt-2 font-medium">All time</p>
+              </div>
             </div>
-            {userPlan === "free" && reportsUsed >= (reportsLimit || 0) && (
-              <Badge className="bg-red-100 text-red-700 border-red-400">Limit reached</Badge>
-            )}
+            {/* <div className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded-md text-[11px] font-bold">
+              <TrendingUp className="w-3 h-3" />
+              <span>+0%</span>
+            </div> */}
           </div>
-          <div className="mb-1">
-            <div className="text-3xl font-bold text-gray-900">
-              {userPlan === "pro" ? (
-                <span className="flex items-center gap-2">
-                  <span>Unlimited</span>
-                  <Sparkles className="w-6 h-6 text-yellow-500" />
-                </span>
-              ) : (
-                `${reportsUsed} / ${reportsLimit}`
-              )}
-            </div>
-          </div>
-          <div className="text-sm text-gray-600 mb-4">Reports used</div>
-          {userPlan === "free" && (
-            <Button
-              onClick={handleUpgrade}
-              variant="outline"
-              size="sm"
-              className="w-full border-blue-300 text-blue-700 hover:bg-blue-50"
-            >
-              Upgrade for unlimited
-            </Button>
-          )}
         </Card>
 
-        <Card className="p-6 bg-white border-2 border-gray-200">
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-purple-600" />
+        {/* Pending Reports */}
+        <Card className="p-6 bg-white border border-gray-200 rounded-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 items-center">
+              <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center shrink-0">
+                <Clock className="w-6 h-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold text-gray-500 mb-1">Pending Reports</p>
+                <div className="text-2xl font-bold text-gray-900 leading-none">{pendingReports}</div>
+                <p className="text-[14px] text-gray-400 mt-2 font-medium">In progress</p>
+              </div>
             </div>
           </div>
-          <div className="mb-1">
-            <div className="text-3xl font-bold text-gray-900">{userPlan === "pro" ? "Pro" : "Free"}</div>
-          </div>
-          <div className="text-sm text-gray-600 mb-4">Current plan</div>
-          {userPlan === "free" ? (
-            <Button onClick={handleUpgrade} size="sm" className="w-full bg-essence hover:bg-cyan-300">
-              Upgrade to Pro
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          ) : (
-            <Button onClick={handleManageBilling} variant="outline" size="sm" className="w-full">
-              Manage plan
-            </Button>
-          )}
         </Card>
 
-        <Card className="p-6 bg-white border-2 border-gray-200">
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-          {lastReport ? (
-            <>
-              <div className="mb-1">
-                <div className="text-lg font-bold text-gray-900 mb-1">
-                  {new Date(lastReport.createdDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+        {/* Current Plan */}
+        <Card className="p-6 bg-white border border-gray-200 rounded-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 items-center">
+              <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center shrink-0">
+                <TrendingUp className="w-6 h-6 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold text-gray-500 mb-1">Current Plan</p>
+                <div className="text-2xl font-bold text-gray-900 leading-none flex items-center gap-2">
+                  {isPro ? "Pro" : "Free"}
+                  {isPro && <Sparkles className="w-5 h-5 text-yellow-500" />}
+                </div>
+                <div className="mt-2">
+                  {isPro ? (
+                    <button onClick={handleManageBilling} className="text-[14px] text-blue-600 font-medium hover:underline">Manage plan</button>
+                  ) : (
+                    <button onClick={handleUpgrade} className="text-[14px] text-blue-600 font-medium hover:underline">Upgrade to Pro</button>
+                  )}
                 </div>
               </div>
-              <div className="text-sm text-gray-600 mb-2">Last report generated</div>
-              <div className="text-xs text-gray-500 truncate">
-                {lastReport.location} • {lastReport.category}
+            </div>
+          </div>
+        </Card>
+
+        {/* Member Since */}
+        <Card className="p-6 bg-white border border-gray-200 rounded-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 items-center">
+              <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center shrink-0">
+                <Calendar className="w-6 h-6 text-green-600" />
               </div>
-            </>
-          ) : (
-            <>
-              <div className="mb-1">
-                <div className="text-lg font-bold text-gray-900">—</div>
+              <div>
+                <p className="text-lg font-semibold text-gray-500 mb-1">Member Since</p>
+                <div className="text-2xl font-bold text-gray-900 leading-none truncate max-w-[120px]">{memberSince}</div>
+                <p className="text-[14px] text-gray-400 mt-2 font-medium">Resets {periodEnd}</p>
               </div>
-              <div className="text-sm text-gray-600">No reports generated yet</div>
-            </>
-          )}
+            </div>
+          </div>
         </Card>
       </div>
 
-      <Card className="p-8 bg-gradient-to-br from-blue-600 to-blue-700 text-white mb-8 shadow-lg">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">Create a new market report</h2>
-            <p className="text-blue-100 mb-4">Use Google Places–verified locations for best results</p>
-            {userPlan === "free" && reportsUsed >= (reportsLimit || 0) && (
-              <p className="text-sm text-yellow-200 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                You've reached your monthly limit. Upgrade to create more reports.
-              </p>
+      {/* ── Reports Table + Donut ── */}
+      <div className="grid md:grid-cols-4 gap-4 mb-6">
+        <Card className="col-span-3 bg-white border border-gray-200 rounded-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 pt-5 pb-3">
+            <h2 className="text-lg font-semibold text-gray-900">Recent Reports</h2>
+            {recentReports.length > 0 && (
+              <Button onClick={() => navigate("/reports")} variant="outline" size="sm" className="border-gray-300 text-xs">
+                View all
+              </Button>
             )}
           </div>
-          <Button
-            onClick={userPlan === "free" && reportsUsed >= (reportsLimit || 0) ? handleUpgrade : handleCreateReport}
-            size="lg"
-            className="bg-white text-blue-600 hover:bg-blue-50 shadow-xl"
-          >
-            <PlusCircle className="w-5 h-5 mr-2" />
-            {userPlan === "free" && reportsUsed >= (reportsLimit || 0) ? "Upgrade to create" : "New report"}
-          </Button>
-        </div>
-      </Card>
-
-      {/* {reports.length > 0 ? (
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Your Reports</h2>
-            <Badge className="bg-gray-100 text-gray-700">{reports.length} total</Badge>
-          </div>
-
-          <Card className="bg-white border-2 border-gray-200 overflow-hidden">
+          {recentReports.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Report ID
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Location
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Category
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Created Date
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Actions
-                    </th>
+                    <th className="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Report ID</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Location</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Category</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-5 py-3 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {reports.map((report) => (
+                <tbody className="divide-y divide-gray-100">
+                  {recentReports.map((report) => (
                     <tr key={report.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-sm font-medium text-gray-900">{report.id}</span>
-                          {report.isLocked && userPlan === "free" && <Lock className="w-4 h-4 text-gray-400" />}
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        <span className="font-mono text-sm font-medium text-gray-900">{report.id}</span>
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">{report.location || "—"}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                          <span className="text-sm text-gray-900">{report.location}</span>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-1.5">
+                          <Building2 className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">{report.category || "—"}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                          <span className="text-sm text-gray-900">{report.category}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-5 py-3 whitespace-nowrap">
                         <span className="text-sm text-gray-600">
-                          {new Date(report.createdDate).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
+                          {report.created_at
+                            ? new Date(report.created_at).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                            : "—"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(report.status)}
-                          {getStatusBadge(report.status)}
-                        </div>
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        {getStatusBadge(report.status)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleViewReport(report.id)}
-                            disabled={report.isLocked && userPlan === "free"}
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            View
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            disabled={userPlan === "free"}
-                            title={userPlan === "free" ? "Pro feature" : "Download report"}
-                          >
-                            <Download className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDeleteReport(report.id)}
-                            className="text-red-600 hover:bg-red-50 border-red-200"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                      <td className="px-5 py-3 whitespace-nowrap text-right">
+                        <Button
+                          onClick={() => navigate(`/report/${report.id}`)}
+                          size="sm"
+                          variant="outline"
+                          className="border-gray-300 text-xs"
+                        >
+                          <Eye className="w-3.5 h-3.5 mr-1" />
+                          View
+                        </Button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </Card>
-        </div>
-      ) : (
-        <EmptyDashboard onCreateReport={handleCreateReport} />
-      )} */}
+          ) : (
+            <div className="px-5 pb-5">
+              <Card className="p-6 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-bold mb-1">Create a new market report</h3>
+                    <p className="text-blue-100 text-sm">Use Google Places–verified locations for best results</p>
+                  </div>
+                  <Button
+                    onClick={handleCreateReport}
+                    size="sm"
+                    className="bg-white text-blue-600 hover:bg-blue-50 shadow"
+                  >
+                    <PlusCircle className="w-4 h-4 mr-1" />
+                    New report
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          )}
+        </Card>
 
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Recent reports</h2>
-          <Button onClick={() => navigate("/reports")} variant="outline" className="border-gray-300">
-            View all
-          </Button>
-        </div>
-        <Card className="bg-white border-2 border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b-2 border-gray-200">
-                <tr>
-                  {/* <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4" />
-                    </div>
-                  </th> */}
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Report ID
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {recentReports.map((report) => (
-                  <tr key={report.id} className="hover:bg-gray-50 transition-colors">
-                    {/* <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleToggleFavorite(report.id)}
-                        className="hover:scale-110 transition-transform"
-                      >
-                        <Star
-                          className={`w-5 h-5 ${
-                            report.isFavorited
-                              ? "fill-amber-400 text-amber-400"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      </button>
-                    </td> */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-medium text-gray-900">
-                          {report.id}
-                        </span>
-                        {report.isLocked && userPlan === "free" && (
-                          <Lock className="w-4 h-4 text-gray-400" />
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                        <span className="text-sm text-gray-900">{report.location}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <Building2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                        <span className="text-sm text-gray-900">{report.category}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(report.createdDate).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(report.status)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <Button
-                        onClick={() => navigate(`/report/${report.id}`)}
-                        size="sm"
-                        variant="outline"
-                        className="border-gray-300"
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        View
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {/* Donut Chart Card */}
+        <Card className="col-span-1 p-5 bg-white border border-gray-200 rounded-sm">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">Usage</h3>
+          <UsageDonut
+            used={usedReports}
+            allocated={allocatedReports}
+            isUnlimited={isUnlimited}
+          />
+          {!isPro && (
+            <Button
+              onClick={handleUpgrade}
+              variant="outline"
+              size="sm"
+              className="w-full mt-4 border-blue-300 text-blue-700 hover:bg-blue-50 text-xs"
+            >
+              Upgrade for unlimited
+            </Button>
+          )}
         </Card>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2 p-8 bg-white border-2 border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <CreditCard className="w-6 h-6 text-gray-700" />
+      {/* ── Billing & Quick Stats ── */}
+      <div className="grid md:grid-cols-4 gap-4">
+        <Card className="md:col-span-4 p-6 bg-white border border-gray-200 rounded-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
+            <CreditCard className="w-5 h-5 text-gray-600" />
             Billing & Subscription
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <div className="text-sm text-gray-600 mb-1">Plan</div>
-              <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                {userPlan === "pro" ? "Pro" : "Free"}
-                {userPlan === "pro" && (
-                  <Badge className="bg-blue-100 text-blue-700 border-blue-400">Active</Badge>
-                )}
+              <div className="text-xs text-gray-500 mb-0.5">Plan</div>
+              <div className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                {isPro ? "Pro" : "Free"}
+                {isPro && <Badge className="bg-blue-100 text-blue-700 border-blue-400 text-[10px]">Active</Badge>}
               </div>
             </div>
 
-            {userPlan === "pro" && (
+            {isPro && (
               <>
                 <div>
-                  <div className="text-sm text-gray-600 mb-1">Renewal date</div>
-                  <div className="text-lg font-semibold text-gray-900">Feb 8, 2026</div>
+                  <div className="text-xs text-gray-500 mb-0.5">Next billing</div>
+                  <div className="text-base font-semibold text-gray-900">
+                    {billing.next_billing_date
+                      ? new Date(billing.next_billing_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+                      : "—"}
+                  </div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600 mb-1">Payment method</div>
-                  <div className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-gray-500" />
-                    •••• 4242
+                  <div className="text-xs text-gray-500 mb-0.5">Payment method</div>
+                  <div className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-gray-400" />
+                    {billing.payment_method || "—"}
                   </div>
                 </div>
               </>
             )}
 
             <div>
-              <div className="text-sm text-gray-600 mb-1">Monthly usage reset</div>
-              <div className="text-lg font-semibold text-gray-900">Feb 1, 2026</div>
+              <div className="text-xs text-gray-500 mb-0.5">Usage resets</div>
+              <div className="text-base font-semibold text-gray-900">{periodEnd}</div>
             </div>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            {userPlan === "free" ? (
-              <Button onClick={handleUpgrade} className="bg-essence hover:bg-cyan-300">
-                <Sparkles className="w-5 h-5 mr-2" />
+          <div className="mt-5 pt-5 border-t border-gray-200">
+            {!isPro ? (
+              <Button onClick={handleUpgrade} size="sm" className="bg-essence hover:bg-cyan-300">
+                <Sparkles className="w-4 h-4 mr-1" />
                 Upgrade to Pro
               </Button>
             ) : (
-              <Button onClick={handleManageBilling} variant="outline" className="border-gray-300">
+              <Button onClick={handleManageBilling} variant="outline" size="sm" className="border-gray-300">
                 Manage billing
-                <ChevronRight className="w-4 h-4 ml-2" />
+                <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             )}
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200">
-          <h3 className="font-semibold text-gray-900 mb-4">Quick Stats</h3>
+        {/* <Card className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-sm">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">Quick Stats</h3>
           <div className="space-y-4">
             <div>
-              <div className="text-sm text-gray-600 mb-1">Total reports</div>
-              <div className="text-2xl font-bold text-gray-900">{reports.length}</div>
+              <div className="text-xs text-gray-500 mb-0.5">Total reports</div>
+              <div className="text-xl font-bold text-gray-900">{totalReports}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-600 mb-1">Member since</div>
-              <div className="text-lg font-semibold text-gray-900">Jan 2026</div>
+              <div className="text-xs text-gray-500 mb-0.5">Member since</div>
+              <div className="text-base font-semibold text-gray-900">{memberSince}</div>
             </div>
-            {userPlan === "pro" && (
-              <div>
-                <div className="text-sm text-gray-600 mb-1">Reports this month</div>
-                <div className="text-2xl font-bold text-gray-900">{reports.length}</div>
-              </div>
-            )}
+            <div>
+              <div className="text-xs text-gray-500 mb-0.5">Reports this period</div>
+              <div className="text-xl font-bold text-gray-900">{usedReports}</div>
+            </div>
           </div>
-        </Card>
+        </Card> */}
       </div>
 
-      <footer className="bg-white border-t border-gray-200 py-6 mt-12">
-        <div className="px-8">
-          <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
-            <button onClick={() => navigate("/privacy")} className="hover:text-gray-900 transition-colors">
-              Privacy Policy
-            </button>
-            <span className="text-gray-300">•</span>
-            <button onClick={() => navigate("/terms")} className="hover:text-gray-900 transition-colors">
-              Terms of Service
-            </button>
-            <span className="text-gray-300">•</span>
-            <button onClick={() => navigate("/contact")} className="hover:text-gray-900 transition-colors">
-              Contact Support
-            </button>
-          </div>
+      <footer className="bg-white border-t border-gray-200 py-5 mt-10">
+        <div className="flex items-center justify-center gap-6 text-xs text-gray-400">
+          <button onClick={() => navigate("/privacy")} className="hover:text-gray-700 transition-colors">
+            Privacy Policy
+          </button>
+          <span className="text-gray-300">•</span>
+          <button onClick={() => navigate("/terms")} className="hover:text-gray-700 transition-colors">
+            Terms of Service
+          </button>
+          <span className="text-gray-300">•</span>
+          <button onClick={() => navigate("/contact")} className="hover:text-gray-700 transition-colors">
+            Contact Support
+          </button>
         </div>
       </footer>
     </div>

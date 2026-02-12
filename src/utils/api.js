@@ -1,6 +1,6 @@
 import axios from "axios";
 import { auth } from "../firebase";
-import { signInAnonymously, signOut } from "firebase/auth";
+import { signInAnonymously, signOut, onAuthStateChanged } from "firebase/auth";
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://203.0.113.10/";
@@ -9,16 +9,45 @@ const api = axios.create({
   baseURL: API_BASE_URL,    
 });
 
+const PUBLIC_CLIENT_PATHS = [
+  "/client/landing-page",
+  "/client/business/locations/suggest",
+  "/client/business/categories/search",
+  "/client/business/categories/suggestions",
+  "/client/business/niches",
+  "/client/announcement",
+  "/client/business/report/preview",
+  "/client/contact",
+];
+
+const waitForAuthReady = () =>
+  new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user);
+    });
+  });
+
+const isPublicClientPath = (url = "") =>
+  PUBLIC_CLIENT_PATHS.some((path) => url.startsWith(path));
 
 api.interceptors.request.use(async (config) => { 
   if(config.url.startsWith("/client")){
-
-    if(!auth.currentUser){
-      await signInAnonymously(auth);
+    if (isPublicClientPath(config.url)) {
+      if(!auth.currentUser){
+        await signInAnonymously(auth);
+      }
+      const token = await auth.currentUser.getIdToken();
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
     }
-    
-    // Get fresh ID token (Firebase auto-refreshes expired tokens)
-    const token = await auth.currentUser.getIdToken();
+
+    const user = auth.currentUser ?? (await waitForAuthReady());
+    if (!user) {
+      return Promise.reject(new Error("Login required"));
+    }
+
+    const token = await user.getIdToken(true);
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -27,25 +56,25 @@ api.interceptors.request.use(async (config) => {
   return Promise.reject(error);
 })
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const status = error?.response?.status;
-    const detail = error?.response?.data?.detail;
-    const isAuthError = status === 401 || status === 403 || detail === "Login required";
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const status = error?.response?.status;
+//     const detail = error?.response?.data?.detail;
+//     const isAuthError = status === 401 || status === 403 || detail === "Login required";
 
-    if (isAuthError) {
-      try {
-        await signOut(auth);
-      } catch (signOutError) {
-        console.error("Logout failed:", signOutError);
-      }
-      window.location.href = "/";
-    }
+//     if (isAuthError) {
+//       try {
+//         await signOut(auth);
+//       } catch (signOutError) {
+//         console.error("Logout failed:", signOutError);
+//       }
+//       window.location.href = "/";
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 
 export const getLanding = async () => {
@@ -95,6 +124,11 @@ export const submitContact = async (payload) => {
 // Private Apis 
 export const getDashboard = async () => {
   const response = await api.get("/client/dashboard");
+  return response.data;
+};
+
+export const getReportList = async () => {
+  const response = await api.get("/client/business/reports/history");
   return response.data;
 };
 

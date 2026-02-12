@@ -32,6 +32,8 @@ import {
   RenameReportModal,
   ShareReportModal,
 } from "../components/common/ReportManagement";
+import { useQuery } from "@tanstack/react-query";
+import { getReportList } from "../utils/api";
 
 const generateMockReports = () => [
   {
@@ -92,6 +94,16 @@ export function ReportList() {
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const itemsPerPage = 10;
+
+  
+    const { data: reportListData, isLoading } = useQuery({
+      queryKey: ["report-list"],
+      queryFn: getReportList,
+      staleTime: 2 * 60 * 1000, // 2 minutes
+    });
+ 
+
+
 
   const handleToggleFavorite = (reportId) => {
     setReports(
