@@ -132,5 +132,10 @@ export const getReportList = async () => {
   return response.data;
 };
 
+export const CreateFullReportApi = async (payload) => {
+  const response = await api.post("/client/business/report/full", payload);
+  return response.data;
+};
+
 export { API_BASE_URL };
 export default api;
