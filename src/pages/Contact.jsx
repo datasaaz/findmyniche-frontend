@@ -18,7 +18,7 @@ import { submitContact } from "../utils/api";
 
 
 
-export function Contact({ onBack } = {}) {
+export function Contact({ onBack, variant = "public" } = {}) {
 
   const navigate = useNavigate();
 
@@ -72,7 +72,7 @@ export function Contact({ onBack } = {}) {
 
     e.preventDefault();
 
-    
+
 
     const payload = {
 
@@ -120,9 +120,11 @@ export function Contact({ onBack } = {}) {
 
 
 
+  const isDashboardVariant = variant === "dashboard";
+
   return (
 
-    <div className="min-h-screen bg-white">
+    <div className={isDashboardVariant ? "bg-transparent" : "min-h-screen bg-white"}>
 
       {/* <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
 
@@ -158,7 +160,7 @@ export function Contact({ onBack } = {}) {
 
 
 
-      <div className="max-w-4xl mx-auto px-6 py-16">
+      <div className="max-w-5xl mx-auto  py-8">
 
         <div className="text-center mb-12">
 
@@ -188,7 +190,10 @@ export function Contact({ onBack } = {}) {
 
                   <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
 
-                  <a href="mailto:support@findmyniche.com" className="text-blue-600 hover:text-blue-700 mb-2 block">
+                  <a
+                    href="mailto:support@findmyniche.com"
+                    className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 hover:bg-blue-100 mb-2"
+                  >
 
                     support@findmyniche.com
 
@@ -334,23 +339,33 @@ export function Contact({ onBack } = {}) {
 
                       </Label>
 
-                      <Input
+                      <div className="relative">
+                        <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <Input
 
-                        id="email"
+                          id="email"
 
-                        type="email"
+                          type="email"
 
-                        placeholder="your.email@example.com"
+                          placeholder="your.email@example.com"
 
-                        value={email}
+                          value={email}
 
-                        onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => setEmail(e.target.value)}
 
-                        className="h-11 border-gray-300"
+                          autoComplete="email"
 
-                        required
+                          inputMode="email"
 
-                      />
+                          spellCheck={false}
+
+                          className="h-11 pl-9 border-gray-300 focus-visible:ring-2 focus-visible:ring-essence focus-visible:ring-offset-0"
+
+                          required
+
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500">We'll only use this to reply to your request.</p>
 
                     </div>
 
@@ -486,15 +501,17 @@ export function Contact({ onBack } = {}) {
 
 
 
-      <footer className="bg-gray-50 border-t border-gray-200 py-8 mt-16">
+      {!isDashboardVariant && (
+        <footer className="bg-gray-50 border-t border-gray-200 py-8 mt-16">
 
-        <div className="max-w-4xl mx-auto px-6 text-center text-gray-600 text-sm">
+          <div className="max-w-4xl mx-auto px-6 text-center text-gray-600 text-sm">
 
-          <p>© 2026 findmyniche. All rights reserved.</p>
+            <p>© 2026 findmyniche. All rights reserved.</p>
 
-        </div>
+          </div>
 
-      </footer>
+        </footer>
+      )}
 
     </div>
 

@@ -24,6 +24,7 @@ import { About } from "./pages/About";
 import { OurData } from "./pages/OurData";
 import { BillingPage } from "./pages/BillingPage";
 import { EmailVerificationPage } from "./pages/EmailVerificationPage";
+import { DashboardCreateReport } from "./pages/DashboardCreateReport";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function App() {
@@ -61,9 +62,11 @@ export default function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/settings" element={<Settings />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-report" element={<DashboardCreateReport />} />
           <Route path="/reports" element={<ReportList />} />
           <Route path="/report/:id" element={<ReportDetail />} />
           <Route path="/billing" element={<BillingPage />} />
+          <Route path="/support" element={<Contact variant="dashboard" />} />
         </Route>
       </Routes>
     </BrowserRouter>

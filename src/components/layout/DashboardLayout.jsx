@@ -21,6 +21,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { logOut } from "../../utils/auth";
+import { auth } from "../../firebase";
+
 
 
 
@@ -46,7 +48,7 @@ export function DashboardLayout() {
       <aside className="w-60 bg-[#1e2235] fixed h-full flex flex-col">
         <div className="p-5">
           <div className="flex items-center gap-2.5 mb-8 px-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-essence rounded-lg flex items-center justify-center">
               <Target className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-semibold text-white">findmyniche</span>
@@ -59,7 +61,7 @@ export function DashboardLayout() {
                 <LayoutDashboard className="w-[18px] h-[18px]" />
                 Dashboard
               </NavLink>
-              <NavLink to="/input" className={getNavClass}>
+              <NavLink to="/create-report" className={getNavClass}>
                 <PlusCircle className="w-[18px] h-[18px]" />
                 Create new report
               </NavLink>
@@ -87,7 +89,7 @@ export function DashboardLayout() {
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 px-4 mb-2">Support</p>
             <nav className="space-y-0.5">
-              <NavLink to="/contact" className={getNavClass}>
+              <NavLink to="/support" className={getNavClass}>
                 <HelpCircle className="w-[18px] h-[18px]" />
                 Help / Support
               </NavLink>
@@ -103,7 +105,7 @@ export function DashboardLayout() {
               <Badge
                 className={
                   userPlan === "pro"
-                    ? "bg-blue-100 text-blue-700 border-blue-300"
+                    ? "bg-essence/10 text-essence border-essence/20"
                     : "bg-gray-100 text-gray-700 border-gray-300"
                 }
               >
@@ -114,10 +116,10 @@ export function DashboardLayout() {
             <DropdownMenu open={userDropdownOpen} onOpenChange={setUserDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-essence to-essence/40 rounded-full flex items-center justify-center">
                     <User className="w-5 h-5 text-white" />
                   </div>
-                  <span className="font-medium text-gray-900">user@example.com</span>
+                  <span className="font-medium text-gray-900">{auth.currentUser?.email}</span>
                   <ChevronDown className="w-4 h-4 text-gray-500" />
                 </button>
               </DropdownMenuTrigger>

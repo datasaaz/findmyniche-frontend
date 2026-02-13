@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
@@ -15,6 +16,7 @@ import {
   Eye,
   Calendar,
 } from "lucide-react";
+import { GlobalLoader } from "../components/common/GlobalLoader";
 import { getDashboard } from "../utils/api";
 import { useQuery } from "@tanstack/react-query";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
@@ -45,6 +47,7 @@ const getStatusBadge = (status) => {
 };
 
 function UsageDonut({ used, allocated, isUnlimited }) {
+  const [activeIndex, setActiveIndex] = useState(null);
   const safeUsed = used || 0;
   const safeAllocated = allocated || 0;
   const percentage = isUnlimited
@@ -62,28 +65,34 @@ function UsageDonut({ used, allocated, isUnlimited }) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-32 h-32">
+      <div className="relative w-44 h-44">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={40}
-              outerRadius={58}
+              innerRadius={58}
+              outerRadius={78}
               startAngle={90}
               endAngle={-270}
               dataKey="value"
               stroke="none"
+              onMouseEnter={(_, idx) => setActiveIndex(idx)}
+              onMouseLeave={() => setActiveIndex(null)}
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index]}
+                  fillOpacity={activeIndex === null ? 1 : index === activeIndex ? 1 : 0.35}
+                />
               ))}
             </Pie>
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-xl font-bold text-gray-900">
             {isUnlimited ? "∞" : `${percentage}%`}
           </span>
         </div>
@@ -101,19 +110,6 @@ function UsageDonut({ used, allocated, isUnlimited }) {
         </div>
       </div>
     </div>
-  );
-}
-
-function SkeletonCard() {
-  return (
-    <Card className="p-4 bg-white border border-gray-200 rounded-sm animate-pulse">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-9 h-9 bg-gray-200 rounded-md" />
-        <div className="h-3 w-20 bg-gray-200 rounded" />
-      </div>
-      <div className="h-6 w-24 bg-gray-200 rounded mb-1" />
-      <div className="h-3 w-16 bg-gray-200 rounded" />
-    </Card>
   );
 }
 
@@ -151,38 +147,12 @@ export function Dashboard() {
       })
     : "—";
 
-  const handleCreateReport = () => navigate("/input");
+  const handleCreateReport = () => navigate("/create-report");
   const handleUpgrade = () => navigate("/billing");
   const handleManageBilling = () => navigate("/billing");
 
   if (isLoading) {
-    return (
-      <div>
-        <div className="mb-6">
-          <div className="h-7 w-48 bg-gray-200 rounded animate-pulse mb-2" />
-          <div className="h-4 w-72 bg-gray-200 rounded animate-pulse" />
-        </div>
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
-          <Card className="col-span-3 p-6 bg-white border border-gray-200 rounded-sm animate-pulse">
-            <div className="h-5 w-32 bg-gray-200 rounded mb-4" />
-            <div className="space-y-3">
-              <div className="h-4 w-full bg-gray-200 rounded" />
-              <div className="h-4 w-full bg-gray-200 rounded" />
-              <div className="h-4 w-3/4 bg-gray-200 rounded" />
-            </div>
-          </Card>
-          <Card className="col-span-1 p-6 bg-white border border-gray-200 rounded-sm animate-pulse">
-            <div className="h-32 w-32 mx-auto bg-gray-200 rounded-full" />
-          </Card>
-        </div>
-      </div>
-    );
+    return <GlobalLoader containerClassName="min-h-[70vh]" spinnerClassName="text-essence" />;
   }
 
   return (
@@ -298,9 +268,9 @@ export function Dashboard() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {recentReports.map((report) => (
-                    <tr key={report.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={report.report_id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-5 py-3 whitespace-nowrap">
-                        <span className="font-mono text-sm font-medium text-gray-900">{report.id}</span>
+                        <span className="font-mono text-sm font-medium text-gray-900">{report.report_id}</span>
                       </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-1.5">
@@ -330,7 +300,7 @@ export function Dashboard() {
                       </td>
                       <td className="px-5 py-3 whitespace-nowrap text-right">
                         <Button
-                          onClick={() => navigate(`/report/${report.id}`)}
+                          onClick={() => navigate(`/report/${report.report_id}`)}
                           size="sm"
                           variant="outline"
                           className="border-gray-300 text-xs"
@@ -474,7 +444,7 @@ export function Dashboard() {
             Terms of Service
           </button>
           <span className="text-gray-300">•</span>
-          <button onClick={() => navigate("/contact")} className="hover:text-gray-700 transition-colors">
+          <button onClick={() => navigate("/support")} className="hover:text-gray-700 transition-colors">
             Contact Support
           </button>
         </div>

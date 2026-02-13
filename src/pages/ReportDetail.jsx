@@ -206,7 +206,7 @@ export function ReportDetail({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
+      {/* <nav className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -263,7 +263,7 @@ export function ReportDetail({
             </div>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       <div className="max-w-7xl mx-auto px-6 py-8 pb-24">
         <Card className="p-8 mb-6 bg-gradient-to-br from-white to-gray-50 border-gray-200">
